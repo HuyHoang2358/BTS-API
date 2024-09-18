@@ -86,6 +86,10 @@ return [
             'delete-success' => 'Xóa thông tin loại cột thành công',
             'has-device' => 'Loại cột đang chứa cột khác nên không thể xóa',
         ],
+        'device' => [
+            'add-success' => 'Thêm thông tin thiết bị vào cột thành công',
+            'remove-success' => 'Xóa thông tin thiết bị khỏi cột thành công',
+        ]
     ],
     'station' => [
         'list' => 'Danh sách các trạm BTS',
@@ -93,6 +97,14 @@ return [
         'not-found' => 'Không tìm thấy thông tin trạm BTS',
         'update-success' => 'Cập nhật thông tin trạm BTS thành công',
         'delete-success' => 'Xóa thông tin trạm BTS thành công',
+        'pole' => [
+            'add-success' => 'Thêm thông tin cột vào trạm BTS thành công',
+            'remove-success' => 'Xóa thông tin cột khỏi trạm BTS thành công',
+        ]
+    ],
+    'file' => [
+        'type-not-support' => 'Định dạng file không được hỗ trợ',
+        'upload-success' => 'Tải file lên thành công',
     ],
 
 ];

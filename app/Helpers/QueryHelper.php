@@ -4,6 +4,7 @@ namespace App\Helpers;
 use App\Enums\ApiMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class QueryHelper
@@ -12,6 +13,12 @@ class QueryHelper
     public static function applySort($query, Request $request)
     {
         // Sort by fields if request sort=field1,-field2
+
+        $sort = $request->query('sort', '');
+        if ($sort === '') return $query;
+        //if (!$request->query('sort') !== null) return $query;
+
+        //return $query->orderBy('name', 'ASC');
         collect(explode(',', $request->query('sort', '')))
             ->filter()
             ->each(function ($field) use ($query) {
@@ -40,6 +47,7 @@ class QueryHelper
         // Lấy giá trị các filter từ request
         if ($filters = $request->query('filter', [])) {
             foreach ($filters as $field => $value) {
+                if ($value === '' || $value === null) continue;
                 if (Str::contains($field, '.')) {
                     // Lấy thông tin cột và phép toán filter
                     [$column, $operation] = explode('.', $field);
@@ -55,6 +63,7 @@ class QueryHelper
                             $query->where($column, 'like', "%$value%");
                             break;
                         case 'in':
+                            Log::error($value);
                             $values = explode(',', $value);
                             $query->whereIn($column, $values);
                             break;
@@ -93,8 +102,10 @@ class QueryHelper
     {
         $perPage = $request->query('perPage','');
         // validate perPage
-        if ($perPage !== '' && !is_numeric($perPage)) $perPage = '';
-        return $perPage === '' ? $query->get()->makeHidden($hidden) : $query->paginate($perPage)->makeHidden($hidden);
+        if ($perPage !== '') {
+            $perPage = (int)$perPage;
+        }
+        return $perPage === '' ? $query->get()->makeHidden($hidden) : $query->paginate($perPage);
     }
 
 
@@ -102,7 +113,7 @@ class QueryHelper
     public static function applySearch($query, Request $request, $columns)
     {
         // Lấy giá trị tìm kiếm từ query 'search'
-        if ($searchTerm = $request->query('search')) {
+        if ($searchTerm = $request->query('searchValue')) {
             $searchTerm = self::removeAccents(strtolower($searchTerm)); // Chuyển thành lowercase và loại bỏ dấu
 
             $query->where(function ($query) use ($columns, $searchTerm) {

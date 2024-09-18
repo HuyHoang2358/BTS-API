@@ -30,7 +30,7 @@ class UpdateStationRequest extends FormRequest
 
     public function rules(): array
     {
-        $stationId = $this->route('station');
+        $stationId = $this->route('id');
         return [
             'name' => 'nullable|max:500',
             'code' => 'nullable|string|max:100|unique:stations,code,' . $stationId,

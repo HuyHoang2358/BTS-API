@@ -216,6 +216,9 @@ return [
             'max' => 'Tên cột phải có độ dài nhỏ hơn 500 ký tự',
             'unique' => 'Tên cột đã tồn tại',
         ],
+        'station_code' => [
+            'exists' => 'Mã trạm không tồn tại',
+        ],
         'height' => [
             'required' => 'Chiều cao cột không được để trống',
             'numeric' => 'Chiều cao cột phải là số',
@@ -238,8 +241,43 @@ return [
             'max' => 'Kích thước phải có độ dài nhỏ hơn 255 ký tự',
         ],
         'diameter_body_tube' => [
-            'string' => 'Đường kính ống thân phải là chuỗi',
-            'max' => 'Đường kính ống thân phải có độ dài nhỏ hơn 255 ký tự',
+            'numeric' => 'Đường kính ống thân phải là số',
+            'string' => 'Kích thước đường kính ống thâ cột là chuỗi',
+            'max' => 'Đường kính ống thân phải nhỏ hơn 10,000',
+        ],
+        'diameter_strut_tube' => [
+            'numeric' => 'Đường kính ống thanh chống phải là số',
+            'string' => 'Kích thước đường kính ống thanh chống là chuỗi',
+            'max' => 'Đường kính ống chân phải nhỏ hơn 10,000',
+        ],
+        'diameter_top_tube' => [
+            'numeric' => 'Đường kính ống thân cột mép trên phải là số',
+            'string' => 'Kích thước đường kính ống thân cột mép trên là chuỗi',
+            'max' => 'Đường kính ống đỉnh phải nhỏ hơn 10,000',
+        ],
+        'diameter_bottom_tube' => [
+            'numeric' => 'Đường kính ống thân cột mép dưới phải là số',
+            'string' => 'Kích thước đường kính ống thân cột mép dưới là chuỗi',
+            'max' => 'Đường kính ống đáy phải nhỏ hơn 10,000',
+        ],
+        'foot_size' => [
+            'string' => 'Kích thước chân cột là chuỗi',
+            'max' => 'Kích thước chân phải có độ dài nhỏ hơn 50 ký tự',
+        ],
+        'top_size' => [
+            'string' => 'Kích thước đỉnh cột phải là chuỗi',
+            'max' => 'Kích thước đỉnh phải có độ dài nhỏ hơn 50 ký tự',
+        ],
+        'params' => [
+            'array' => 'Danh sách thông số phải là mảng',
+        ],
+        'params.*.key' => [
+            'string' => 'Tên thông số phải là chuỗi',
+            'max' => 'Tên thông số phải có độ dài nhỏ hơn 255 ký tự',
+        ],
+        'params.*.value' => [
+            'string' => 'Giá trị thông số phải là chuỗi',
+            'max' => 'Giá trị thông số phải có độ dài nhỏ hơn 255 ký tự',
         ],
         'structure' => [
             'string' => 'Cấu trúc phải là chuỗi',

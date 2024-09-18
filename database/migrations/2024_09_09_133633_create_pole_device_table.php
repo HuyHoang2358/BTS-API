@@ -16,13 +16,13 @@ return new class extends Migration
             $table->foreignId('pole_id')->constrained('poles')->cascadeOnDelete();
             $table->foreignId('device_id')->constrained('devices')->cascadeOnDelete();
             $table->unique(['pole_id', 'device_id']);
-            $table->timestamp('installed_at')->nullable();
-            $table->double('virtual_env_x')->nullable();
-            $table->double('virtual_env_y')->nullable();
-            $table->double('virtual_env_z')->nullable();
-            $table->double('virtual_env_anpha')->nullable();
-            $table->double('virtual_env_beta')->nullable();
-            $table->double('virtual_env_gama')->nullable();
+            $table->timestamp('attached_at')->nullable();
+            $table->double('x')->nullable();
+            $table->double('y')->nullable();
+            $table->double('z')->nullable();
+            $table->double('anpha')->nullable();
+            $table->double('beta')->nullable();
+            $table->double('gama')->nullable();
             $table->timestamps();
         });
     }

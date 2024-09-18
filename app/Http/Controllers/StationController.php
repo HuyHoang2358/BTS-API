@@ -9,11 +9,13 @@ use App\Http\Requests\CreateStationRequest;
 use App\Http\Requests\UpdateStationRequest;
 use App\Models\Address\Address;
 use App\Models\Location;
+use App\Models\Pole\Pole;
 use App\Models\Station;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use function Symfony\Component\String\s;
 
 class StationController extends Controller
 {
@@ -29,16 +31,41 @@ class StationController extends Controller
             $query,
             $request,
             ['name', 'code'],
-            ['location', 'address', 'address.country', 'address.province', 'address.district', 'address.commune'],
+            ['location', 'address', 'address.country', 'address.province', 'address.district', 'address.commune', 'poles'],
             ['location_id', 'address_id']
         );
 
         return ApiResponse::success($stations, ApiMessage::STATION_LIST);
     }
 
+    public function detail($id): JsonResponse
+    {
+        try {
+            $station = Station::with([
+                'location', 'address', 'address.country',
+                'address.province', 'address.district',
+                'address.commune', 'poles', 'poles.devices', 'poles.devices.category', 'poles.devices.vendor'
+            ])->findOrFail($id)->makeHidden([
+                'location_id', 'address_id'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                "station_id" => $id,
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
+        }
+
+        return ApiResponse::success($station, ApiMessage::STATION_LIST);
+    }
+
+    public function listCode(): JsonResponse
+    {
+        $stations = Station::all()->select('id','code');
+        return ApiResponse::success($stations, ApiMessage::STATION_LIST);
+    }
     public function store(CreateStationRequest $request): JsonResponse
     {
-        //return ApiResponse::success($request->validated(), ApiMessage::STATION_STORE_SUCCESS);
         // Create station
         $validated = $request->validated();
 
@@ -121,6 +148,11 @@ class StationController extends Controller
                 'district_id' => $validate['address_district_id'],
             ]);
         }
+        if (isset($validate['address_commune_id'])) {
+            $address->update([
+                'commune_id' => $validate['address_commune_id'],
+            ]);
+        }
         return ApiResponse::success($station, ApiMessage::STATION_UPDATE_SUCCESS);
     }
 
@@ -137,6 +169,59 @@ class StationController extends Controller
         }
         $station->delete();
         return ApiResponse::success($station, ApiMessage::STATION_DESTROY_SUCCESS);
+    }
+
+    public function addPole($id, Request $request): JsonResponse
+    {
+        $input = $request->all();
+        try {
+            $station = Station::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                "station_id" => $id,
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
+        }
+
+        try {
+            $pole = Station::findOrFail($input['pole_id']);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                'pole_id' => $input['pole_id'],
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
+        }
+
+        $station->poles()->attach($input['pole_id'], $input);
+        return ApiResponse::success($station, ApiMessage::STATION_POLE_STORE_SUCCESS);
+    }
+
+    public function removePole($id, $pole_id): JsonResponse
+    {
+        try {
+            $station = Station::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                "station_id" => $id,
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
+        }
+
+        try {
+            $pole = Station::findOrFail($pole_id);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                'pole_id' => $pole_id,
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
+        }
+
+        $station->poles()->detach($pole_id);
+        return ApiResponse::success($station, ApiMessage::STATION_POLE_REMOVE_SUCCESS);
     }
 
 

@@ -12,7 +12,8 @@ class Address extends Model
 {
     protected $table = 'addresses';
     protected $fillable = ['detail', 'country_id', 'province_id', 'district_id', 'commune_id'];
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at', 'country_id', 'province_id', 'district_id', 'commune_id'];
+
 
     public function country(): BelongsTo
     {

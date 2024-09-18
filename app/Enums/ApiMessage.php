@@ -71,6 +71,8 @@ enum ApiMessage: string
     case POLE_STORE_SUCCESS = '060004|pole.add-success';
     case POLE_UPDATE_SUCCESS = '060005|pole.update-success';
     case POLE_DESTROY_SUCCESS = '060006|pole.delete-success';
+    case POLE_DEVICE_STORE_SUCCESS = '060007|pole.device.add-success';
+    case POLE_DEVICE_REMOVE_SUCCESS = '060008|pole.device.remove-success';
 
     case POLE_CATEGORY_LIST = '060100|pole.category.list';
     case POLE_CATEGORY_NOT_FOUND = '060101|pole.category.not-found';
@@ -86,6 +88,11 @@ enum ApiMessage: string
     case STATION_STORE_SUCCESS = '070004|station.add-success';
     case STATION_UPDATE_SUCCESS = '070005|station.update-success';
     case STATION_DESTROY_SUCCESS = '070006|station.delete-success';
+    case STATION_POLE_STORE_SUCCESS = '070007|station.pole.add-success';
+    case STATION_POLE_REMOVE_SUCCESS = '070007|station.pole.remove-success';
+
+    case UPLOAD_TYPE_NOT_SUPPORT = '100000|file.type-not-support';
+    case UPLOAD_SUCCESS = '100001|file.upload-success';
 
 
 

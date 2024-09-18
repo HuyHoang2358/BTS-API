@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class DeviceImport implements ToModel, WithUpserts, WithHeadingRow, WithValidation, SkipsEmptyRows, SkipsOnFailure, WithBatchInserts, WithChunkReading, shouldQueue
+class DeviceImport implements ToModel, WithUpserts, WithHeadingRow, WithValidation, SkipsEmptyRows, SkipsOnFailure, WithBatchInserts, WithChunkReading /*shouldQueue*/
 {
     use Importable, SkipsFailures;
 
@@ -106,7 +106,7 @@ class DeviceImport implements ToModel, WithUpserts, WithHeadingRow, WithValidati
             ["name" => $row["name"]],
             [
                 'slug' => Str::slug($row['name']),
-                'images' => $row['images'] ?? json_encode([]),
+                'images' => $row['images'] ?  '/public/BTS/Images/Devices/'.$row['images']  : null,
                 'model_url' => $row['model_url'] ?? null,
                 'length' => $row['length'] ?? null,
                 'width' => $row['width'] ?? null,

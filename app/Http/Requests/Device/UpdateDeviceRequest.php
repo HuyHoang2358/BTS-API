@@ -40,7 +40,8 @@ class UpdateDeviceRequest extends FormRequest
             'diameter' => 'nullable|numeric|between:0,1000000',
             'device_category_id' => 'nullable|exists:device_categories,id',
             'vendor_id' => 'nullable|exists:vendors,id',
-            'params' => 'nullable|string|max:1000|regex:/^(\s*\w+\s*:\s*\w+)(\s*,\s*\w+\s*:\s*\w+)*$/',
+            'params' => 'nullable|array',
+            /*'params' => 'nullable|string|max:1000|regex:/^(\s*\w+\s*:\s*\w+)(\s*,\s*\w+\s*:\s*\w+)*$/',*/
         ];
     }
 

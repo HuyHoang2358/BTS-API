@@ -21,28 +21,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DeviceController extends Controller
 {
-    public function __construct()
+  /*  public function __construct()
     {
         $this->middleware('auth:api');
     }
-
-    protected function addOrUpdateParamsToDevice($device, $params_str): void
+    */
+    protected function addOrUpdateParamsToDevice($device, $params): void
     {
+       //params = [{"key": "11", "value": "2"}, {"key": "2", "value": "2"}]
         $device->params()->delete();
-        if (empty($params_str)) return;
-
-        $pairs = array_map('trim', explode(',', $params_str));
-        foreach ($pairs as $pair) {
-            if (!str_contains($pair, ':')) continue;
-            list($key, $value) = explode(':', $pair, 2) + [null, null];
-            if ($key !== null && $value !== null) {
-                $key = trim($key);
-                $value = trim($value);
-                $device->params()->create([
-                    'key' => $key,
-                    'value' => $value,
-                ]);
-            }
+        if (empty($params)) return;
+        foreach ($params as $param) {
+            $device->params()->create([
+                'key' => $param['key'],
+                'value' => $param['value'],
+            ]);
         }
     }
 
@@ -54,10 +47,16 @@ class DeviceController extends Controller
         return ApiResponse::success($devices, ApiMessage::DEVICE_LIST);
     }
 
+    public function listCode(): JsonResponse
+    {
+        $devices = Device::all()->select('id','name');
+        return ApiResponse::success($devices, ApiMessage::DEVICE_LIST);
+    }
+
     public function store(CreateDeviceRequest $request): JsonResponse
     {
         $device = Device::create($request->validated());
-        $this->addOrUpdateParamsToDevice($device, $request->input('params', ''));
+        $this->addOrUpdateParamsToDevice($device, $request->input('params', []));
 
         return ApiResponse::success($device, ApiMessage::DEVICE_STORE_SUCCESS);
     }
@@ -99,7 +98,7 @@ class DeviceController extends Controller
 
     public function importExcel(ImportExcelFileRequest $request): JsonResponse
     {
-        $requiredHeadings = ['name', 'vendor', 'category', 'length', 'width', 'depth', 'weight', 'diameter', 'description', 'params'];
+        $requiredHeadings = ['name', 'vendor', 'category', 'length', 'width', 'depth', 'weight', 'diameter', 'description', 'params', 'images'];
         $import = new DeviceImport();
         $file = $request->file('file');
         $validate = ExcelHelper::validateFileFormat($file, $requiredHeadings);

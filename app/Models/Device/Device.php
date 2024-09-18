@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static create(mixed $validated)
  * @method static findOrFail($id)
  * @method static updateOrCreate(array $array, array $array1)
+ * @method static find($device_id)
+ * @method static where(string $string, $id)
  * @property mixed $category
  */
 class Device extends Model
@@ -33,6 +35,15 @@ class Device extends Model
         'created_at',
         'updated_at'
     ];
+
+    // delete params before delete device
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::deleting(function ($device) {
+            $device->params()->delete();
+        });
+    }
 
     public function category(): BelongsTo
     {
