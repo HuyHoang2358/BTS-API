@@ -93,7 +93,7 @@ enum ApiMessage: string
 
     case UPLOAD_TYPE_NOT_SUPPORT = '100000|file.type-not-support';
     case UPLOAD_SUCCESS = '100001|file.upload-success';
-
+    case POLE_STRESS_SUCCESS = '110000|pole.stress-success';
 
 
     case SUCCESS = '1000|authenticated';

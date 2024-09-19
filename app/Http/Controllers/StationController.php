@@ -225,4 +225,11 @@ class StationController extends Controller
     }
 
 
+    public function updateData($id){
+        $station = Station::findOrFail($id);
+
+
+        return ApiResponse::success($station, ApiMessage::STATION_UPDATE_SUCCESS);
+    }
+
 }

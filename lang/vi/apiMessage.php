@@ -78,6 +78,7 @@ return [
         'not-found' => 'Không tìm thấy thông tin cột',
         'update-success' => 'Cập nhật thông tin cột thành công',
         'delete-success' => 'Xóa thông tin cột thành công',
+        'stress-success' => 'Tính toán giá trị ứng suất cột thành công',
         'category' => [
             'list' => 'Danh sách các loại cột',
             'add-success' => 'Thêm thông tin loại cột thành công',

@@ -38,6 +38,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::delete('/{id}', [StationController::class, 'destroy'])->name('station.destroy');
         Route::post('/{id}/poles', [StationController::class, 'addPole'])->name('station.pole.addPole');
         Route::delete('/{id}/poles/{pole_id}', [StationController::class, 'removePole'])->name('station.pole.removePole');
+        Route::get('/{id}/update-data', [StationController::class, 'updateData'])->name('station.updateData');
         //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
         //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
     });
@@ -161,7 +162,7 @@ Route::group(['prefix' => 'upload'], function (){
 
 
 // Calculate Pole street
-Route::get('/calculate-pole-stress', [StressPoleController::class, 'poleStress']);
+Route::post('/calculate-pole-stress', [StressPoleController::class, 'poleStress']);
 
 
 Route::get('/', function(){

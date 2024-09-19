@@ -8,6 +8,7 @@ use App\Models\Pole\Pole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @method static create(mixed $validated)
  * @method static findOrFail($id)
@@ -52,5 +53,12 @@ class Station extends Model
         return $this->belongsToMany(Pole::class, 'station_pole', 'station_code', 'pole_id', 'code')
             ->withPivot('built_on')->with('category');
     }
+
+    public function model3Ds(): HasMany
+    {
+        return $this->hasMany(Model3D::class, 'station_id', 'id');
+    }
+
+
 
 }

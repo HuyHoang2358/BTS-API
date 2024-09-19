@@ -303,7 +303,45 @@ return [
             'description' => [
                 "max" => "Phần miêu tả phải có độ dài nhỏ hơn 500 ký tự",
             ],
-        ]
+        ],
+        'devices' =>[
+            'required' => 'Danh sách thiết bị không được để trống',
+            'array' => 'Danh sách thiết bị phải là mảng',
+            'min' => 'Danh sách thiết bị phải có ít nhất 1 thiết bị',
+            'id'=> [
+                'required' => 'ID thiết bị không được để trống',
+                'exists' => 'ID thiết bị không tồn tại',
+            ],
+            'name' => [
+                'required' => 'Tên thiết bị không được để trống',
+                'exists' => 'Tên thiết bị không tồn tại',
+            ],
+            'depth' => [
+                'required' => 'Chiều cao thiết bị không được để trống',
+                'numeric' => 'Chiều cao thiết bị phải là số',
+                'min' => 'Chiều cao thiê bị phải lớn hơn hoặc bằng 0',
+            ],
+            'width' => [
+                'required' => 'Chiều rộng thiết bị không được để trống',
+                'numeric' => 'Chiều rộng thiết bị phải là số',
+                'min' => 'Chiều rộng thiết bị phải lớn hơn hoặc bằng 0',
+            ],
+            'height' => [
+                'required' => 'Chiều cao thiết bị không được để trống',
+                'numeric' => 'Chiều cao thiết bị phải là số',
+                'min' => 'Chiều cao thiết bị phải lớn hơn hoặc bằng 0',
+            ],
+            'weight' => [
+                'required' => 'Trọng lượng thiết bị không được để trống',
+                'numeric' => 'Trọng lượng thiết bị phải là số',
+                'min' => 'Trọng lượng thiết bị phải lớn hơn hoặc bằng 0',
+            ],
+            'DC' => [
+                'required' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột không được để trống',
+                'integer' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột phải là số nguyên',
+                'between' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột phải nằm trong khoảng từ 0 đến 100',
+            ],
+        ],
     ],
     'station' => [
         'name' => [

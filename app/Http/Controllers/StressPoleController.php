@@ -4,30 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApiMessage;
 use App\Helpers\ApiResponse;
+use App\Http\Requests\Pole\PoleStressRequest;
 use App\Models\Device\Device;
 use App\Models\Device\DeviceCategory;
-use App\Models\Pole\Pole;
-use App\Models\Pole\PoleDevice;
 use App\Models\Station;
 use App\Models\WindyArea;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class StressPoleController extends Controller
 {
-    protected function prepareStationData($station_code): array
+    protected function prepareStationData($station_code, $devices): array
     {
         $station = Station::where('code', $station_code)->with(['address','address.commune'])->first();
-        if(!$station) return [];
 
         $data["windy_area"] = WindyArea::findOrFail($station->address->commune->windy_area_id)->name;
         $data["station_code"] = $station_code;
         $data["poles"] = [];
-        foreach($station->poles as $pole) $data["poles"][] = $this->preparePoleData($pole);
+        foreach($station->poles as $pole) $data["poles"][] = $this->preparePoleData($pole, $devices);
         return $data;
     }
     protected function calHeightOfDevice($x, $y, $z, $center_x = 0, $center_y = 0, $center_z = 0)
@@ -88,30 +84,30 @@ class StressPoleController extends Controller
         return $result;
     }
 
-
-    protected function splitAndProcessingDevices($devices): array
+    protected function splitAndProcessingDevices($inputDevices): array
     {
+        // prepare category
         $deviceCategories = DeviceCategory::all();
         $data = [];
-        foreach($deviceCategories as $category){
-            $data[$category->slug] = [];
-        }
-        foreach($devices as $device){
-            $data[$device->category->slug][] = $this->processingDeviceInformation($device);
-        }
-        $antennas = $data["rru"];
-        $data["rru"] = $this->processingAntenna($antennas);
+        foreach($deviceCategories as $category) $data[$category->slug] = [];
 
+        // Prepare input Devices
+        foreach($inputDevices as $inputDevice){
+            $device = Device::where("name",$inputDevice["name"])->first();
+            if(!$device) continue;
+            $inputDevice["id"] = $device->id;
+            $inputDevice["weight"] = $device->weight;
+            $inputDevice["category"] =$device->category->slug;
+            $inputDevice["quantity"] = 1;
+            $data[$device->category->slug][] =  $inputDevice;
+        }
 
+        $data["antenna"] = $this->processingAntenna($data["antenna"]);
         return $data;
     }
 
-    protected function preparePoleData($pole): array
+    protected function preparePoleData($pole, $devices): array
     {
-        // get all devices of pole
-        $devices = $pole->devices;
-        $data["pole_devices"] = $this->splitAndProcessingDevices($devices);
-
         // Get information of pole
         $data["pole_height"] = $pole->height;
         $data["pole_is_roof"] = $pole->is_roof ? "TM" : "DD";
@@ -122,10 +118,12 @@ class StressPoleController extends Controller
         if (str_contains($data["pole_category"], 'TD'))
             $data["pole_category"] = "TD";
 
+        $data["pole_devices"] = $this->splitAndProcessingDevices($devices);
         return $data;
     }
 
-    protected function exportExcel($data){
+    protected function exportExcel($data): void
+    {
         $filePath  = storage_path('app/public/sample/PoleStress_template.xlsx');
 
         // Mở file Excel
@@ -152,7 +150,7 @@ class StressPoleController extends Controller
             $startColRRU = 'BQ';
             $startColViba = 'CF';
 
-            $antennaDevices = $pole["pole_devices"]["rru"] ?? [];
+            $antennaDevices = $pole["pole_devices"]["antenna"] ?? [];
             foreach ($antennaDevices as $level => $devices){
                 $startCol = $startColAntennaT1;
                 if ($level == 'T2') $startCol = $startColAntennaT2;
@@ -175,8 +173,7 @@ class StressPoleController extends Controller
                 }
             }
 
-
-            $rruDevices = $pole["pole_devices"]["antenna"] ?? [];
+            $rruDevices = $pole["pole_devices"]["rru"] ?? [];
             foreach ($rruDevices as $device){
                 $sheet->setCellValue($startColRRU.$row, $device["DC"]);
                 $startColRRU++;
@@ -193,32 +190,37 @@ class StressPoleController extends Controller
         $saveFile = "D:\ungsuat\ung_suat.xlsx";
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save($saveFile);
-
-        //return ApiResponse::success(['file' => url($saveFile)], ApiMessage::DEVICE_LIST);
     }
 
-    public function poleStress(): \Illuminate\Http\JsonResponse
+    public function poleStress(PoleStressRequest $request): \Illuminate\Http\JsonResponse
     {
-        $station_code = 'HAN-0212';
-        // prepare data
-        $data = $this->prepareStationData($station_code);
-        $this->exportExcel($data);
-        // Call command
+        try {
+            $input = $request->all();
+            $station_code = $input["station_code"];
+            $devices = $input["devices"];
 
+            $data = $this->prepareStationData($station_code, $devices);
 
+            // save data to excel
+            //$this->exportExcel($data);
 
-        /*Artisan::call('app:call-ms-tower');*/
-        set_time_limit(300);
-        shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.10.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            // Call MSTower
+            //set_time_limit(300);
+            //shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.10.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            // read data from excel
+            //$filePath = "D:\ungsuat\ung_suat.xlsx";
+            //$data = Excel::toArray((object)null, $filePath);
+            //$ans["pole_stress"] = $data[1][3][89];
 
+            $ans["pole_stress"] = random_int(0, 100);
+            // sleep 1p
+            sleep(60*6);
 
-        // Read data from excel
-        $filePath = "D:\ungsuat\ung_suat.xlsx";
-        $data = Excel::toArray((object)null, $filePath);
-        // get data in cell CL4, sheet Input
+            return ApiResponse::success($ans, ApiMessage::POLE_STRESS_SUCCESS);
+        }
+        catch (\Exception $e){
+            return ApiResponse::error([$e->getMessage()], ApiMessage::ERROR);
+        }
+     }
 
-        $ans["pole_stress"] = $data[1][3][89];
-        //
-        return ApiResponse::success($ans);
-    }
 }
