@@ -194,7 +194,7 @@ class StressPoleController extends Controller
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save($saveFile);
 
-        return ApiResponse::success(['file' => url($saveFile)], ApiMessage::DEVICE_LIST);
+        //return ApiResponse::success(['file' => url($saveFile)], ApiMessage::DEVICE_LIST);
     }
 
     public function poleStress(): \Illuminate\Http\JsonResponse
@@ -202,9 +202,15 @@ class StressPoleController extends Controller
         $station_code = 'HAN-0212';
         // prepare data
         $data = $this->prepareStationData($station_code);
-
+        $this->exportExcel($data);
         // Call command
-        Artisan::call('app:call-ms-tower');
+
+
+
+        /*Artisan::call('app:call-ms-tower');*/
+        set_time_limit(300);
+        shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.10.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+
 
         // Read data from excel
         $filePath = "D:\ungsuat\ung_suat.xlsx";
@@ -212,7 +218,7 @@ class StressPoleController extends Controller
         // get data in cell CL4, sheet Input
 
         $ans["pole_stress"] = $data[1][3][89];
-        //return $this->exportExcel($data);
+        //
         return ApiResponse::success($ans);
     }
 }
