@@ -338,7 +338,7 @@ return [
             ],
             'DC' => [
                 'required' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột không được để trống',
-                'integer' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột phải là số nguyên',
+                'numeric' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột phải là số',
                 'between' => 'Khoảng cách từ trọng tâm thiết bị đến trọng tâm cột phải nằm trong khoảng từ 0 đến 100',
             ],
         ],

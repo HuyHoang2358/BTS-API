@@ -54,6 +54,7 @@ class Station extends Model
             ->withPivot('built_on')->with('category');
     }
 
+
     public function model3Ds(): HasMany
     {
         return $this->hasMany(Model3D::class, 'station_id', 'id');

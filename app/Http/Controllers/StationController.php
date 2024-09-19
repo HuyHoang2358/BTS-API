@@ -9,6 +9,7 @@ use App\Http\Requests\CreateStationRequest;
 use App\Http\Requests\UpdateStationRequest;
 use App\Models\Address\Address;
 use App\Models\Location;
+use App\Models\model3D;
 use App\Models\Pole\Pole;
 use App\Models\Station;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -227,8 +228,6 @@ class StationController extends Controller
 
     public function updateData($id){
         $station = Station::findOrFail($id);
-
-
         return ApiResponse::success($station, ApiMessage::STATION_UPDATE_SUCCESS);
     }
 

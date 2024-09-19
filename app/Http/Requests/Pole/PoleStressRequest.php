@@ -26,7 +26,7 @@ class PoleStressRequest extends FormRequest
             'devices.*.width' => 'required|numeric|min:0',
             'devices.*.height' => 'required|numeric|min:0',
             //'devices.*.weight' => 'required|numeric|min:0',
-            'devices.*.DC' => 'required|integer|between:0,100',
+            'devices.*.DC' => 'required|numeric|between:0,100',
         ];
     }
     // Cấu hình các message tương ứng
@@ -71,7 +71,7 @@ class PoleStressRequest extends FormRequest
             ],
             'devices.*.DC' => [
                 'required' => __('customValidate.pole.devices.DC.required'),
-                'integer' => __('customValidate.pole.devices.DC.integer'),
+                'numeric' => __('customValidate.pole.devices.DC.integer'),
                 'between' => __('customValidate.pole.devices.DC.between'),
             ]
         ];
