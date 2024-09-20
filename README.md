@@ -1,4 +1,5 @@
-## 
+##  BTS - API
+### Installation
 ```commandline
    composer install
 ```
@@ -17,3 +18,7 @@
 ```commandline
    php artisan optimize
 ```
+
+
+### Requirements
+- Lib: spatie/image [Spatie Image](https://spatie.be/docs/image/v3/introduction)

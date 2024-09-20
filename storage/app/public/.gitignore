@@ -1,2 +1,11 @@
 /temp/*
+*.jpg
+*.JPG
+*.png
+*.PNG
+*.jpeg
+*.gif
+*.pdf
+*.doc
+*.docx
 !.gitignore

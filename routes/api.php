@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DataFlowController;
 use App\Http\Controllers\StressPoleController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -38,7 +39,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::delete('/{id}', [StationController::class, 'destroy'])->name('station.destroy');
         Route::post('/{id}/poles', [StationController::class, 'addPole'])->name('station.pole.addPole');
         Route::delete('/{id}/poles/{pole_id}', [StationController::class, 'removePole'])->name('station.pole.removePole');
-        Route::get('/{id}/update-data', [StationController::class, 'updateData'])->name('station.updateData');
         //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
         //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
     });
@@ -169,3 +169,7 @@ Route::get('/', function(){
     return response()->json(['message' => 'Hello World!']);
 });
 
+
+Route::group(['prefix' => 'test'], function (){
+    Route::get('/data-flow', [DataFlowController::class, 'index'])->name('test.dataflow.index');
+});

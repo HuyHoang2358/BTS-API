@@ -225,10 +225,4 @@ class StationController extends Controller
         return ApiResponse::success($station, ApiMessage::STATION_POLE_REMOVE_SUCCESS);
     }
 
-
-    public function updateData($id){
-        $station = Station::findOrFail($id);
-        return ApiResponse::success($station, ApiMessage::STATION_UPDATE_SUCCESS);
-    }
-
 }
