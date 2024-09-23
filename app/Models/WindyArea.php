@@ -16,6 +16,7 @@ class WindyArea extends Model
     protected $table = 'windy_areas';
     protected $fillable = [
         'name',
+        'color',
         'wo',
         'v3s50',
         'v10m50',

@@ -19,6 +19,7 @@ class CreateWindyAreaRequest extends FormRequest
     {
         return [
             'name' => 'required|max:5|unique:windy_areas,name',
+            'color' => 'nullable',
             'wo' => 'nullable|integer',
             'v3s50' => 'nullable|integer',
             'v10m50' => 'nullable|integer',

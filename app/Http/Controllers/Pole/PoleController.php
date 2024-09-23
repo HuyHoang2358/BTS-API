@@ -50,7 +50,7 @@ class PoleController extends Controller
         if ($request->has('station_code')) {
             StationPole::create([
                 'pole_id' => $pole->id,
-                'station_code' => $request->validated('station_code'),
+                'station_id' => Station::where('code', $request->validated('station_code'))->first()->id,
             ]);
         }
         return ApiResponse::success($pole->with('params'), ApiMessage::POLE_STORE_SUCCESS);
@@ -87,11 +87,11 @@ class PoleController extends Controller
             if (!$stationPole) {
                 StationPole::create([
                     'pole_id' => $pole->id,
-                    'station_code' => $request->validated('station_code'),
+                    'station_id' => Station::where('code', $request->validated('station_code'))->first()->id,
                 ]);
             } else
             $stationPole->update([
-                'station_code' => $request->validated('station_code'),
+                'station_id' =>Station::where('code', $request->validated('station_code'))->first()->id,
             ]);
         }
 

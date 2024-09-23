@@ -20,6 +20,7 @@ class UpdateWindyAreaRequest extends FormRequest
         $windyAreaId = $this->route('id');
         return [
             'name' => 'nullable|max:5|unique:windy_areas,name,'.$windyAreaId,
+            'color' => 'nullable',
             'wo' => 'nullable|integer',
             'v3s50' => 'nullable|integer',
             'v10m50' => 'nullable|integer',

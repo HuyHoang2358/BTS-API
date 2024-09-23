@@ -398,5 +398,15 @@ return [
             'exists' => 'ID xã, phường không tồn tại',
             'integer' => 'ID xã, phường phải là số',
         ]
+    ],
+    'process' => [
+        'station_code' => [
+            'required' => 'Mã trạm không được để trống',
+            'exists' => 'Mã trạm không tồn tại, vui lòng thêm mới trạm trước khi chạy cập nhật dữ liệu',
+        ],
+        'date' => [
+            'required' => 'Ngày không được để trống',
+            'date' => 'Ngày phải là ngày tháng',
+        ],
     ]
 ];

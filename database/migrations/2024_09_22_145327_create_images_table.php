@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('station_pole', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('station_id')->constrained()->on('stations')->cascadeOnDelete();
-            $table->foreignId('pole_id')->constrained()->on('poles')->cascadeOnDelete();
-            $table->timestamp('built_on');
             $table->timestamps();
         });
     }
@@ -25,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('station_pole');
+        Schema::dropIfExists('images');
     }
 };

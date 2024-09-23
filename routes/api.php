@@ -37,8 +37,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('/{id}', [StationController::class, 'detail'])->name('station.detail');
         Route::patch('/{id}', [StationController::class, 'update'])->name('station.update');
         Route::delete('/{id}', [StationController::class, 'destroy'])->name('station.destroy');
-        Route::post('/{id}/poles', [StationController::class, 'addPole'])->name('station.pole.addPole');
-        Route::delete('/{id}/poles/{pole_id}', [StationController::class, 'removePole'])->name('station.pole.removePole');
+       // Route::post('/{id}/poles', [StationController::class, 'addPole'])->name('station.pole.addPole');
+       // Route::delete('/{id}/poles/{pole_id}', [StationController::class, 'removePole'])->name('station.pole.removePole');
         //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
         //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
     });
@@ -170,6 +170,7 @@ Route::get('/', function(){
 });
 
 
-Route::group(['prefix' => 'test'], function (){
-    Route::get('/data-flow', [DataFlowController::class, 'index'])->name('test.dataflow.index');
+Route::group(['prefix' => 'processing-data-processes'], function (){
+    Route::get('/', [DataFlowController::class, 'index'])->name('data-processing.process.index');
+    Route::post('/', [DataFlowController::class, 'store'])->name('data-processing.process.store');
 });

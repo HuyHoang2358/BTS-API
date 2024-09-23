@@ -172,7 +172,7 @@ class StationController extends Controller
         return ApiResponse::success($station, ApiMessage::STATION_DESTROY_SUCCESS);
     }
 
-    public function addPole($id, Request $request): JsonResponse
+/*    public function addPole($id, Request $request): JsonResponse
     {
         $input = $request->all();
         try {
@@ -195,7 +195,10 @@ class StationController extends Controller
             return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
         }
 
-        $station->poles()->attach($input['pole_id'], $input);
+        $station->poles()->attach($input['pole_id'], [
+            'station_id' => $id,
+            'built_on' => $input['built_on'] ?? null,
+        ]);
         return ApiResponse::success($station, ApiMessage::STATION_POLE_STORE_SUCCESS);
     }
 
@@ -223,6 +226,6 @@ class StationController extends Controller
 
         $station->poles()->detach($pole_id);
         return ApiResponse::success($station, ApiMessage::STATION_POLE_REMOVE_SUCCESS);
-    }
+    }*/
 
 }

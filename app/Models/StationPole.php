@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 class StationPole extends Model
 {
     protected $table = 'station_pole';
-    protected $fillable = ['station_code', 'pole_id', 'built_on'];
+    protected $fillable = ['station_id', 'pole_id', 'built_on'];
     protected $hidden = ['created_at', 'updated_at'];
 
 }

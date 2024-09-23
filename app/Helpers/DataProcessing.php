@@ -28,8 +28,29 @@ class DataProcessing
             ->optimize()
             ->save($dst_path);
     }
-    public static function getMetadata($src_path): array
+
+    public static function getMetadata($src_path, $metadata, $isOnlyGetFromJson = true): array
     {
+        $data = [];
+        $data['filename'] = $src_path;
+        $data['width'] = $metadata['Width'] ?? null;
+        $data['height'] = $metadata['Height'] ?? null;
+        $data["GPS"]["GPSAltitude"] = $metadata['GPSAltitude'] ?? null;
+        $data["GPS"]["GPSLatitude"] = $metadata['GPSLatitude'] ?? null;
+        $data["GPS"]["GPSLongitude"] = $metadata['GPSLongitude'] ?? null;
+        $data["GPS"]["GPSAltitudeRef"]  = $metadata['GPSAltitudeRef'] ?? null;
+        $data["GPS"]["GPSLatitudeRef"] = $metadata["GPSLatitudeRef"] ?? null;
+        $data["GPS"]["GPSLongitudeRef"]  = $metadata["GPSLongitudeRef"] ?? null;
+        $data["camera"]["GimbalRollDegree"] = $metadata["IFD0"]["DateTime"] ?? null;
+        $data["camera"]["GimbalYawDegree"] = $metadata["IFD0"]["DateTime"] ?? null;
+        $data["camera"]["GimbalPitchDegree"] = $metadata["IFD0"]["DateTime"] ?? null;
+        $data["camera"]["Make"] = null;
+        $data["camera"]["Model"] = null;
+        $data["camera"]["Software"] = null;
+        $data["camera"]["DateTime"] = null;
+
+        if ($isOnlyGetFromJson) return $data;
+
         $exifData = @exif_read_data($src_path, 0, true);
         // Get basic information
         $data["filename"] = $exifData["FILE"]["FileName"] ?? null;
@@ -53,4 +74,6 @@ class DataProcessing
         $data["exifData"] = $exifData;
         return $data;
     }
+
+    public static function readMetadata(){};
 }

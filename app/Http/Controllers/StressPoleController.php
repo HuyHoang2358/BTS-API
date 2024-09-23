@@ -202,19 +202,15 @@ class StressPoleController extends Controller
             $data = $this->prepareStationData($station_code, $devices);
 
             // save data to excel
-            //$this->exportExcel($data);
+            $this->exportExcel($data);
 
             // Call MSTower
-            //set_time_limit(300);
-            //shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.10.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            set_time_limit(300);
+            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
             // read data from excel
-            //$filePath = "D:\ungsuat\ung_suat.xlsx";
-            //$data = Excel::toArray((object)null, $filePath);
-            //$ans["pole_stress"] = $data[1][3][89];
-
-            $ans["pole_stress"] = random_int(0, 100);
-            // sleep 1p
-            sleep(60*6);
+            $filePath = "D:\ungsuat\ung_suat.xlsx";
+            $data = Excel::toArray((object)null, $filePath);
+            $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
 
             return ApiResponse::success($ans, ApiMessage::POLE_STRESS_SUCCESS);
         }

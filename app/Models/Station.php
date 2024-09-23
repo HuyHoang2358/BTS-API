@@ -50,7 +50,7 @@ class Station extends Model
     }
     public function poles(): BelongsToMany
     {
-        return $this->belongsToMany(Pole::class, 'station_pole', 'station_code', 'pole_id', 'code')
+        return $this->belongsToMany(Pole::class, 'station_pole', 'station_id', 'pole_id', 'id')
             ->withPivot('built_on')->with('category');
     }
 
