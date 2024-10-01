@@ -18,7 +18,7 @@ class PoleStressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'station_code' => 'nullable|exists:stations,code',
+            'pole_id' => 'nullable|exists:poles,id',
             'devices' => 'required|array|min:1',
             //'devices.*.id' => 'required|exists:devices,id',
             'devices.*.name' => 'required|exists:devices,name',

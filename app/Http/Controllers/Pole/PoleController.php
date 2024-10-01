@@ -201,4 +201,35 @@ class PoleController extends Controller
     }
 
 
+    public function updateDeviceInformation($poleDeviceId, Request $request)
+    {
+        $input = $request->all();
+        try {
+            $poleDevice = PoleDevice::findOrFail($poleDeviceId);
+        } catch (ModelNotFoundException $e) {
+            $errors = [
+                "poleDeviceId" => $poleDeviceId,
+                "request_body" => $request->all(),
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::POLE_DEVICE_NOT_FOUND, 404);
+        }
+        $poleDeviceUpdates = [];
+        if(isset($input['suggested_img'])) $poleDeviceUpdates['suggested_img'] = $input['suggested_img'];
+        if(isset($input['tilt'])) $poleDeviceUpdates['suggest_text'] = $input['tilt'];
+        if(isset($input['azimuth'])) $poleDeviceUpdates['suggest_text'] = $input['azimuth'];
+        if(isset($input['x'])) $poleDeviceUpdates['x'] = $input['x'];
+        if(isset($input['y'])) $poleDeviceUpdates['y'] = $input['y'];
+        if(isset($input['z'])) $poleDeviceUpdates['z'] = $input['z'];
+        if(isset($input['alpha'])) $poleDeviceUpdates['alpha'] = $input['alpha'];
+        if(isset($input['beta'])) $poleDeviceUpdates['beta'] = $input['beta'];
+        if(isset($input['gama'])) $poleDeviceUpdates['gama'] = $input['gama'];
+        if(isset($input['description'])) $poleDeviceUpdates['description'] = $input['description'];
+        $poleDevice->update($poleDeviceUpdates);
+
+        return ApiResponse::success($poleDevice, ApiMessage::POLE_DEVICE_UPDATE_SUCCESS);
+
+    }
+
+
 }

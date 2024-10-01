@@ -2,6 +2,7 @@
 
 namespace App\Models\Address;
 
+use App\Models\WindyArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,5 +20,10 @@ class Commune extends Model
     public function district(): BelongsTo
     {
         return $this->belongsTo(District::class);
+    }
+
+    public function windyArea(): BelongsTo
+    {
+        return $this->belongsTo(WindyArea::class);
     }
 }

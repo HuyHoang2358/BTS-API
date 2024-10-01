@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @method static create(mixed $validated)
  * @method static findOrFail($id)
+ * @method static where(string $string, mixed $param)
  */
 class PoleCategory extends Model
 {

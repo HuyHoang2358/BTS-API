@@ -24,6 +24,15 @@ class PoleDevice extends Model
        'alpha',
        'beta',
        'gama',
+       'tilt',
+       'azimuth',
+       'height',
+       'vertices',
+       'translation',
+       'rotation',
+       'suggested_devices',
+       'suggested_img',
+       'description'
    ];
 
 }

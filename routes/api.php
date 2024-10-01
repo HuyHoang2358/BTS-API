@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataFlowController;
+use App\Http\Controllers\StationCategoryController;
 use App\Http\Controllers\StressPoleController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -28,20 +29,43 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     Route::get('/profile', [AuthController::class, 'userProfile']);
 });
 
-/*Route::group(['middleware' => 'api'], function () {*/
-    // Station Manager
-    Route::group(['prefix' => 'stations'], function (){
-        Route::get('/', [StationController::class, 'index'])->name('station.index');
-        Route::get('/codes', [StationController::class, 'listCode'])->name('station.list.code');
-        Route::post('/', [StationController::class, 'store'])->name('station.store');
-        Route::get('/{id}', [StationController::class, 'detail'])->name('station.detail');
-        Route::patch('/{id}', [StationController::class, 'update'])->name('station.update');
-        Route::delete('/{id}', [StationController::class, 'destroy'])->name('station.destroy');
-       // Route::post('/{id}/poles', [StationController::class, 'addPole'])->name('station.pole.addPole');
-       // Route::delete('/{id}/poles/{pole_id}', [StationController::class, 'removePole'])->name('station.pole.removePole');
-        //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
-        //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
+Route::group(['middleware' => 'api'], function () {
+    // Upload Manager
+    Route::group(['prefix' => 'upload'], function (){
+        Route::post('/{type}', [UploadController::class, 'uploadFile'])->name('upload.file');
     });
+
+
+    // Station Category Manager
+    Route::group(['prefix' => 'stations-categories'], function (){
+        Route::get('/', [StationCategoryController::class, 'index'])->name('station.category.index');
+        Route::post('/', [StationCategoryController::class, 'store'])->name('station.category.store');
+        Route::patch('/{id}', [StationCategoryController::class, 'update'])->name('station.category.update');
+        Route::delete('/{id}', [StationCategoryController::class, 'destroy'])->name('station.category.destroy');
+        //Route::post('/excel/import', [DeviceCategoryController::class, 'importExcel'])->name('device.category.import-excel');
+        //Route::get('/excel/export', [DeviceCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
+    });
+
+    // Device Category Manager
+    Route::group(['prefix' => 'device-categories'], function (){
+        Route::get('/', [DeviceCategoryController::class, 'index'])->name('device.category.index');
+        Route::post('/', [DeviceCategoryController::class, 'store'])->name('device.category.store');
+        Route::patch('/{id}', [DeviceCategoryController::class, 'update'])->name('device.category.update');
+        Route::delete('/{id}', [DeviceCategoryController::class, 'destroy'])->name('device.category.destroy');
+        //Route::post('/excel/import', [DeviceCategoryController::class, 'importExcel'])->name('device.category.import-excel');
+        //Route::get('/excel/export', [DeviceCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
+    });
+
+    // Pole Category Manager
+    Route::group(['prefix' => 'pole-categories'], function (){
+        Route::get('/', [PoleCategoryController::class, 'index'])->name('pole.category.index');
+        Route::post('/', [PoleCategoryController::class, 'store'])->name('pole.category.store');
+        Route::patch('/{id}', [PoleCategoryController::class, 'update'])->name('pole.category.update');
+        Route::delete('/{id}', [PoleCategoryController::class, 'destroy'])->name('pole.category.destroy');
+        //Route::post('/excel/import', [PoleCategoryController::class, 'importExcel'])->name('device.category.import-excel');
+        //Route::get('/excel/export', [PoleCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
+    });
+
 
     // Location Manager
     Route::group(['prefix' => 'address'], function (){
@@ -101,17 +125,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('/excel/export', [VendorController::class, 'exportExcel'])->name('device.vendor.export-excel');
     });
 
-    // Device Category Manager
-    Route::group(['prefix' => 'device-categories'], function (){
-        Route::get('/', [DeviceCategoryController::class, 'index'])->name('device.category.index');
-        Route::post('/', [DeviceCategoryController::class, 'store'])->name('device.category.store');
-        Route::patch('/{id}', [DeviceCategoryController::class, 'update'])->name('device.category.update');
-        Route::delete('/{id}', [DeviceCategoryController::class, 'destroy'])->name('device.category.destroy');
-        //Route::post('/excel/import', [DeviceCategoryController::class, 'importExcel'])->name('device.category.import-excel');
-        //Route::get('/excel/export', [DeviceCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
-    });
-
-
     // Device Manager
     Route::group(['prefix' => 'devices'], function (){
         Route::get('/', [DeviceController::class, 'index'])->name('device.index');
@@ -123,16 +136,18 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('/excel/export', [DeviceController::class, 'exportExcel'])->name('device.export-excel');
     });
 
+    // Station Manager
+    Route::group(['prefix' => 'stations'], function (){
+        Route::get('/', [StationController::class, 'index'])->name('station.index');
+        Route::get('/codes', [StationController::class, 'listCode'])->name('station.list.code');
+        Route::post('/', [StationController::class, 'store'])->name('station.store');
+        Route::get('/{id}', [StationController::class, 'detail'])->name('station.detail');
+        Route::patch('/{id}', [StationController::class, 'update'])->name('station.update');
+        Route::delete('/{id}', [StationController::class, 'destroy'])->name('station.destroy');
 
-    // Pole Category Manager
-    Route::group(['prefix' => 'pole-categories'], function (){
-        Route::get('/', [PoleCategoryController::class, 'index'])->name('pole.category.index');
-        Route::post('/', [PoleCategoryController::class, 'store'])->name('pole.category.store');
-        Route::patch('/{id}', [PoleCategoryController::class, 'update'])->name('pole.category.update');
-        Route::delete('/{id}', [PoleCategoryController::class, 'destroy'])->name('pole.category.destroy');
-        //Route::post('/excel/import', [PoleCategoryController::class, 'importExcel'])->name('device.category.import-excel');
-        //Route::get('/excel/export', [PoleCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
+        Route::get('/excel/export', [StationController::class, 'exportExcel'])->name('station.excel.export');
     });
+
 
     // Pole Manager
     Route::group(['prefix' => 'poles'], function (){
@@ -141,28 +156,30 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::patch('/{id}', [PoleController::class, 'update'])->name('pole.update');
         Route::delete('/{id}', [PoleController::class, 'destroy'])->name('pole.destroy');
 
+        Route::group(['prefix' => '/devices'], function (){
+            Route::patch('/{pole_device_id}', [PoleController::class, 'updateDeviceInformation'])->name('pole.device.info.update');
+        });
+
         Route::post('/add-device', [PoleController::class, 'addDevice'])->name('pole.device.add');
         Route::patch('/{id}/edit-device', [PoleController::class, 'updateDevice'])->name('pole.device.update');
         Route::delete('/{id}/delete-device', [PoleController::class, 'removeDevice'])->name('pole.device.remove');
 
+        //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
+        //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
+
+    });
 
 
-    //Route::post('/excel/import', [PoleController::class, 'importExcel'])->name('device.category.import-excel');
-    //Route::get('/excel/export', [PoleController::class, 'exportExcel'])->name('device.category.export-excel');
+    // Calculate Pole street
+    Route::post('/calculate-pole-stress', [StressPoleController::class, 'poleStress']);
+
+    // Processing data  process
+    Route::group(['prefix' => 'processing-data-processes'], function (){
+        Route::get('/', [DataFlowController::class, 'index'])->name('data-processing.process.index');
+        Route::post('/', [DataFlowController::class, 'store'])->name('data-processing.process.store');
+    });
 
 });
-Route::get('/test-command', [\App\Http\Controllers\CommandController::class, 'index']);
-
-// Upload Manager
-Route::group(['prefix' => 'upload'], function (){
-    Route::post('/{type}', [UploadController::class, 'uploadFile'])->name('upload.file');
-});
-
-/*});*/
-
-
-// Calculate Pole street
-Route::post('/calculate-pole-stress', [StressPoleController::class, 'poleStress']);
 
 
 Route::get('/', function(){
@@ -170,7 +187,9 @@ Route::get('/', function(){
 });
 
 
-Route::group(['prefix' => 'processing-data-processes'], function (){
-    Route::get('/', [DataFlowController::class, 'index'])->name('data-processing.process.index');
-    Route::post('/', [DataFlowController::class, 'store'])->name('data-processing.process.store');
-});
+Route::get('/test', [DataFlowController::class, 'test'])->name('data-processing.process.test');
+
+
+
+
+

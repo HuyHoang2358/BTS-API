@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Address\Address;
-use App\Models\Location;
+use App\Models\Image\Image;
 use App\Models\Pole\Pole;
+use App\Models\Process\DataProcessingProcess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,11 +13,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static create(mixed $validated)
  * @method static findOrFail($id)
  * @method static where(string $string, mixed $validated)
+ * @method static find($station_id)
+ * @method static whereIn(string $string, array $station_ids)
  */
 class Station extends Model
 {
     protected $table = 'stations';
-    protected $fillable = ['name', 'code', 'description', 'location_id', 'address_id'];
+    protected $fillable = ['name', 'code', 'date', 'status', 'station_category_id'];
     protected $hidden = ['created_at', 'updated_at'];
 
     // delete station ->remove all address, location, poles
@@ -29,7 +31,7 @@ class Station extends Model
             $station->location()->delete();
             $station->address()->delete();
 
-            $stationPoles = StationPole::where('station_code', $station->code)->get();
+            $stationPoles = StationPole::where('station_id', $station->id)->get();
             $station->poles()->detach();
             foreach($stationPoles as $stationPole){
                 $pole = Pole::find($stationPole->pole_id);
@@ -39,27 +41,37 @@ class Station extends Model
     }
 
 
-    public function location(): BelongsTo
+   public function detail(): BelongsTo
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(StationCategory::class, 'station_category_id', 'id')
+            ->with(['location', 'address']);
     }
 
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(Address::class);
-    }
     public function poles(): BelongsToMany
     {
         return $this->belongsToMany(Pole::class, 'station_pole', 'station_id', 'pole_id', 'id')
-            ->withPivot('built_on')->with('category');
+            ->withPivot('id','pole_id','station_id', 'built_on')
+            ->with(['category']);
     }
 
-
-    public function model3Ds(): HasMany
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class, 'station_id', 'id');
+    }
+    public function models(): HasMany
     {
         return $this->hasMany(Model3D::class, 'station_id', 'id');
     }
 
+    public function processingDataProcesses(): HasMany
+    {
+        return $this->hasMany(DataProcessingProcess::class, 'station_id', 'id');
+    }
 
+    public function stationCategory(): BelongsTo
+    {
+        return $this->belongsTo(StationCategory::class);
+    }
 
 }
+

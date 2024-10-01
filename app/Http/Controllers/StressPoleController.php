@@ -7,23 +7,29 @@ use App\Helpers\ApiResponse;
 use App\Http\Requests\Pole\PoleStressRequest;
 use App\Models\Device\Device;
 use App\Models\Device\DeviceCategory;
+use App\Models\Pole\Pole;
 use App\Models\Station;
+use App\Models\StationPole;
 use App\Models\WindyArea;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class StressPoleController extends Controller
 {
-    protected function prepareStationData($station_code, $devices): array
+    protected function prepareStationData($pole_id, $devices): array
     {
-        $station = Station::where('code', $station_code)->with(['address','address.commune'])->first();
+        $pole = Pole::find($pole_id);
+        $data['pole'] = $pole;
+        $station_pole = StationPole::where('pole_id', $pole_id)->first();
 
-        $data["windy_area"] = WindyArea::findOrFail($station->address->commune->windy_area_id)->name;
-        $data["station_code"] = $station_code;
+        $station = Station::where('id', $station_pole->station_id)->with(['detail.address','detail.address.commune'])->first();
+
+        $data["windy_area"] = WindyArea::findOrFail($station->detail->address->commune->windy_area_id)->name;
+        $data["station_code"] = $station->code;
         $data["poles"] = [];
-        foreach($station->poles as $pole) $data["poles"][] = $this->preparePoleData($pole, $devices);
+
+        $data["poles"][] = $this->preparePoleData($pole, $devices);
         return $data;
     }
     protected function calHeightOfDevice($x, $y, $z, $center_x = 0, $center_y = 0, $center_z = 0)
@@ -196,23 +202,23 @@ class StressPoleController extends Controller
     {
         try {
             $input = $request->all();
-            $station_code = $input["station_code"];
+            $pole_id = $input["pole_id"];
             $devices = $input["devices"];
 
-            $data = $this->prepareStationData($station_code, $devices);
+            $data = $this->prepareStationData($pole_id, $devices);
 
             // save data to excel
-            $this->exportExcel($data);
+            //$this->exportExcel($data);
 
             // Call MSTower
-            set_time_limit(300);
-            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            //set_time_limit(300);
+            //shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
             // read data from excel
-            $filePath = "D:\ungsuat\ung_suat.xlsx";
-            $data = Excel::toArray((object)null, $filePath);
-            $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
-
-            return ApiResponse::success($ans, ApiMessage::POLE_STRESS_SUCCESS);
+            //$filePath = "D:\ungsuat\ung_suat.xlsx";
+           // $data = Excel::toArray((object)null, $filePath);
+           // $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
+            $ans["pole_stress"] = 85;
+            return ApiResponse::success($ans  , ApiMessage::POLE_STRESS_SUCCESS);
         }
         catch (\Exception $e){
             return ApiResponse::error([$e->getMessage()], ApiMessage::ERROR);

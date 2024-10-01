@@ -4,19 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApiMessage;
 use App\Helpers\ApiResponse;
-use App\Helpers\QueryHelper;
-use App\Http\Requests\CreateStationRequest;
-use App\Http\Requests\UpdateStationRequest;
-use App\Models\Address\Address;
-use App\Models\Location;
-use App\Models\model3D;
-use App\Models\Pole\Pole;
 use App\Models\Station;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\StationCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use function Symfony\Component\String\s;
+use Illuminate\Support\Facades\Storage;
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class StationController extends Controller
 {
@@ -25,39 +21,24 @@ class StationController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $query = Station::query();
-        $stations = QueryHelper::applyQuery(
-            $query,
-            $request,
-            ['name', 'code'],
-            ['location', 'address', 'address.country', 'address.province', 'address.district', 'address.commune', 'poles'],
-            ['location_id', 'address_id']
-        );
+        $stationCategories = StationCategory::withCount('scans')
+            ->having('scans_count', '>', 0)->with(['scans', 'location', 'address','scans.models'])
+            ->get()->makeHidden(['location_id', 'address_id', 'stations_count']);
 
-        return ApiResponse::success($stations, ApiMessage::STATION_LIST);
+        return ApiResponse::success($stationCategories, ApiMessage::STATION_LIST);
     }
 
     public function detail($id): JsonResponse
     {
-        try {
-            $station = Station::with([
-                'location', 'address', 'address.country',
-                'address.province', 'address.district',
-                'address.commune', 'poles', 'poles.devices', 'poles.devices.category', 'poles.devices.vendor'
-            ])->findOrFail($id)->makeHidden([
-                'location_id', 'address_id'
-            ]);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                "station_id" => $id,
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
+        $station = Station::with(['detail','poles','images','models','poles.devices',
+            'images.gps', 'images.cameraPose', 'images.gimbal', 'poles.devices.category','poles.devices.params', 'poles.devices.vendor'
+        ])->find($id);
+        if (!$station) {
+            return ApiResponse::error(null, ApiMessage::STATION_NOT_FOUND, 404);
         }
-
-        return ApiResponse::success($station, ApiMessage::STATION_LIST);
+        return ApiResponse::success($station, ApiMessage::STATION_DETAIL);
     }
 
     public function listCode(): JsonResponse
@@ -65,167 +46,85 @@ class StationController extends Controller
         $stations = Station::all()->select('id','code');
         return ApiResponse::success($stations, ApiMessage::STATION_LIST);
     }
-    public function store(CreateStationRequest $request): JsonResponse
+
+    public function exportExcel(Request $request)
     {
-        // Create station
-        $validated = $request->validated();
+        $input = $request->query('stations');
+        $station_ids = [];
+        foreach ($input as $item) $station_ids[] = (int)$item;
 
-        $station = Station::create(
-            Arr::only($validated, ['name', 'code', 'description'])
-        );
-        $station->location_id = Location::create([
-            'latitude' => $validated['location_latitude'],
-            'longitude' => $validated['location_longitude'],
-            'height' => $validated['location_height'],
-        ])->id;
-        $station->address_id = Address::create([
-            'detail' => $validated['address_detail'] ?? null,
-            'country_id' => $validated['address_country_id'],
-            'province_id' => $validated['address_province_id'],
-            'district_id' => $validated['address_district_id'],
-            'commune_id' => $validated['address_commune_id'],
-        ])->id;
-        $station->save();
+        $stations = Station::whereIn('id', $station_ids)->get();
+        if (count($stations) == 0) return ApiResponse::error(["params" =>  $input], ApiMessage::STATION_EXPORT_FAIL, 404);
 
-        return ApiResponse::success($station, ApiMessage::STATION_STORE_SUCCESS);
+
+        // Mở file Excel
+        $filePath  = storage_path('app/public/sample/Stations_Report_template.xlsx');
+        $spreadsheet = IOFactory::load($filePath);
+        $sheet = $spreadsheet->getSheetByName('CỘT');
+        $startRow = 5;
+        $startCol = 'A';
+        foreach ($stations as $index => $station) {
+            $startRow++;
+            $pole = $station->poles->first();
+            $sheet->setCellValue('A' . $startRow, $index + 1);
+            $sheet->setCellValue('B' . $startRow, 'Khu vực 1');
+            $sheet->setCellValue('C' . $startRow, substr($station->code, 0, 3));
+            $sheet->setCellValue('D' . $startRow, $station->code);
+            $sheet->setCellValue('E' . $startRow, $station->detail->location->longitude);
+            $sheet->setCellValue('F' . $startRow, $station->detail->location->latitude);
+            $sheet->setCellValue('G' . $startRow, $station->detail->address->address_detail);
+            $sheet->setCellValue('H' . $startRow, $station->detail->address->commune->windyArea->name);
+            $sheet->setCellValue('I' . $startRow, $pole->category->code);
+            $sheet->setCellValue('J' . $startRow, $pole->is_roof ? "TM" : "DD");
+            $sheet->setCellValue('K' . $startRow, "Tự động");
+            $sheet->setCellValue('L' . $startRow, $pole->height);
+            $sheet->setCellValue('M' . $startRow, "Tự động");
+            $sheet->setCellValue('N' . $startRow, $pole->house_height ?? 'X');
+            $sheet->setCellValue('O' . $startRow, "X");
+            $sheet->setCellValue('P' . $startRow, $pole->foot_size ?? 'X');
+            $sheet->setCellValue('Q' . $startRow, $pole->top_size ??  'X');
+            $sheet->setCellValue('R' . $startRow, $pole->foot_size || $pole->top_size ? 'Tự động' : 'X');
+            $sheet->setCellValue('S' . $startRow, $pole->diameter_body_tube ?? 'X');
+            $sheet->setCellValue('T' . $startRow, $pole->diameter_strut_tube ?? 'X');
+            $sheet->setCellValue('U' . $startRow, $pole->diameter_body_tube || $pole->diameter_strut_tube ? 'Tự động' : 'X');
+            $sheet->setCellValue('V' . $startRow, $pole->tilt_angle ?? 'X');
+            $sheet->setCellValue('W' . $startRow, $pole->tilt_angle ? 'Tự động' : 'X');
+        }
+        $sheet = $spreadsheet->getSheetByName('THIẾT BỊ TRÊN CỘT');
+        $startRow = 4;
+        foreach ($stations as $index => $station) {
+            $startRow++;
+            $pole = $station->poles->first();
+            $sheet->setCellValue('A' . $startRow, ($index + 1) . "." . $station->code);
+            $devices = $pole->devices;
+            foreach ($devices as $device) {
+                $startRow++;
+                $sheet->setCellValue('A' . $startRow, $station->code);
+                $sheet->setCellValue('B' . $startRow, $device->category->name);
+                $sheet->setCellValue('C' . $startRow, $device->name);
+                $sheet->setCellValue('D' . $startRow, $device->vendor != null ? $device->vendor->name: '');
+                $sheet->setCellValue('E' . $startRow, $device->height);
+                $sheet->setCellValue('F' . $startRow, $device->width);
+                $sheet->setCellValue('G' . $startRow, $device->depth);
+                $sheet->setCellValue('H' . $startRow, $device->weight);
+                $sheet->setCellValue('I' . $startRow, 'Tự động');
+                $sheet->setCellValue('J' . $startRow, $device->pivot->height ?? 0 + $pole->house_height?? 0 );
+                $sheet->setCellValue('K' . $startRow, 'Tự động');
+                $sheet->setCellValue('L' . $startRow, $device->pivot->height ?? 0);
+                $sheet->setCellValue('M' . $startRow, 'Tự động');
+                $sheet->setCellValue('N' . $startRow, $device->pivot->tilt ?? 0);
+                $sheet->setCellValue('O' . $startRow, 'Tự động');
+                $sheet->setCellValue('P' . $startRow, $device->pivot->azimuth ?? 0);
+                $sheet->setCellValue('Q' . $startRow, 'Tự động');
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        $filePath = 'temp/export/' . 'stations_report_' . time() . '.xlsx';
+        $saveFile =storage_path("app/public/".$filePath);
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save($saveFile);
+        return ApiResponse::success(['file' => url(Storage::url($filePath))], ApiMessage::DEVICE_LIST);
     }
-
-    public function update($id, UpdateStationRequest $request): JsonResponse
-    {
-        $validate = $request->validated();
-        // remove null value in validate
-
-        $validate = array_filter($validate, function ($value) {
-            return !is_null($value);
-        });
-
-        //return ApiResponse::success($validate, ApiMessage::STATION_STORE_SUCCESS);
-        try {
-            $station = Station::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                "pole_id" => $id,
-                "request_body" => $request->all(),
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
-        }
-
-        $station->update($validate);
-        $location = $station->location;
-        if (isset($validate['location_latitude'])) {
-            $location->update([
-                'latitude' => $validate['location_latitude'],
-            ]);
-        }
-        if (isset($validate['location_longitude'])) {
-            $location->update([
-                'longitude' => $validate['location_longitude'],
-            ]);
-        }
-        if (isset($validate['location_height'])) {
-            $location->update([
-                'height' => $validate['location_height'],
-            ]);
-        }
-        $address = $station->address;
-        if (isset($validate['address_detail'])) {
-            $address->update([
-                'detail' => $validate['address_detail'],
-            ]);
-        }
-        if (isset($validate['address_country_id'])) {
-            $address->update([
-                'country_id' => $validate['address_country_id'],
-            ]);
-        }
-        if (isset($validate['address_province_id'])) {
-            $address->update([
-                'province_id' => $validate['address_province_id'],
-            ]);
-        }
-        if (isset($validate['address_district_id'])) {
-            $address->update([
-                'district_id' => $validate['address_district_id'],
-            ]);
-        }
-        if (isset($validate['address_commune_id'])) {
-            $address->update([
-                'commune_id' => $validate['address_commune_id'],
-            ]);
-        }
-        return ApiResponse::success($station, ApiMessage::STATION_UPDATE_SUCCESS);
-    }
-
-    public function destroy($id): JsonResponse
-    {
-        try {
-            $station = Station::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                "station_id" => $id,
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
-        }
-        $station->delete();
-        return ApiResponse::success($station, ApiMessage::STATION_DESTROY_SUCCESS);
-    }
-
-/*    public function addPole($id, Request $request): JsonResponse
-    {
-        $input = $request->all();
-        try {
-            $station = Station::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                "station_id" => $id,
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
-        }
-
-        try {
-            $pole = Station::findOrFail($input['pole_id']);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                'pole_id' => $input['pole_id'],
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
-        }
-
-        $station->poles()->attach($input['pole_id'], [
-            'station_id' => $id,
-            'built_on' => $input['built_on'] ?? null,
-        ]);
-        return ApiResponse::success($station, ApiMessage::STATION_POLE_STORE_SUCCESS);
-    }
-
-    public function removePole($id, $pole_id): JsonResponse
-    {
-        try {
-            $station = Station::findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                "station_id" => $id,
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::STATION_NOT_FOUND, 404);
-        }
-
-        try {
-            $pole = Station::findOrFail($pole_id);
-        } catch (ModelNotFoundException $e) {
-            $errors = [
-                'pole_id' => $pole_id,
-                "error" => $e->getMessage(),
-            ];
-            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
-        }
-
-        $station->poles()->detach($pole_id);
-        return ApiResponse::success($station, ApiMessage::STATION_POLE_REMOVE_SUCCESS);
-    }*/
-
 }

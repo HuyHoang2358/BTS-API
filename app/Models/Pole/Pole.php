@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @method static create(mixed $validated)
  * @method static findOrFail($id)
+ * @method static find($pole_id)
  * @property mixed $id
  */
 class Pole extends Model
@@ -34,7 +35,15 @@ class Pole extends Model
         'foot_size',
         'top_size',
         'structure',
-        'description'
+        'z_plane',
+        'north_direction',
+        'gps_ratio',
+        'tilt_angle',
+        'param_a',
+        'param_b',
+        'description',
+        'stress_value',
+        'is_shielded'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -64,14 +73,14 @@ class Pole extends Model
     public function devices(): BelongsToMany
     {
         return $this->belongsToMany(Device::class, 'pole_device', 'pole_id', 'device_id')
-            ->withPivot('id','attached_at', 'x', 'y', 'z', 'alpha', 'beta', 'gama');
+            ->withPivot('id','attached_at', 'x', 'y', 'z', 'alpha', 'beta', 'gama','rotation','translation', 'vertices','tilt', 'azimuth','height','suggested_devices', 'suggested_img','description');
     }
     // add station code to atrribute of pole
 
 
     public function stations(): BelongsToMany
     {
-        return $this->belongsToMany(Station::class, 'station_pole', 'pole_id', 'station_code')
+        return $this->belongsToMany(Station::class, 'station_pole', 'pole_id', 'station_id')
             ->withPivot('built_on');
     }
 

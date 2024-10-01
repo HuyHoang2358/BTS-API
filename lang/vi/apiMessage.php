@@ -42,6 +42,7 @@ return [
     "excel" => [
         'import-success' => 'Import dữ liệu thành công',
         'import-fail' => 'Import dữ liệu thất bại',
+        'export-fail' => 'Xuất dữ liệu thất bại',
     ],
     'windy-area' => [
         'list' => 'Danh sách các vùng gió',
@@ -88,12 +89,15 @@ return [
             'has-device' => 'Loại cột đang chứa cột khác nên không thể xóa',
         ],
         'device' => [
+            'update-success' => 'Cập nhật thông tin thiết bị trên cột thành công',
+            'not-found' => 'Không tìm thấy thông tin thiết bị, cột',
             'add-success' => 'Thêm thông tin thiết bị vào cột thành công',
             'remove-success' => 'Xóa thông tin thiết bị khỏi cột thành công',
         ]
     ],
     'station' => [
         'list' => 'Danh sách các trạm BTS',
+        'detail' => 'Chi tiết trạm BTS',
         'add-success' => 'Thêm thông tin trạm BTS thành công',
         'not-found' => 'Không tìm thấy thông tin trạm BTS',
         'update-success' => 'Cập nhật thông tin trạm BTS thành công',

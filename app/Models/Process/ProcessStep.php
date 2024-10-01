@@ -10,7 +10,6 @@ class ProcessStep extends Model
 {
     protected $table= 'process_steps';
     protected $fillable = ['process_id','step_number','step_name','current_progress','total_progress','status'];
-
     public function process(): BelongsTo
     {
         return $this->belongsTo(DataProcessingProcess::class);

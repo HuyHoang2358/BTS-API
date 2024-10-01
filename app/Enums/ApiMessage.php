@@ -81,15 +81,22 @@ enum ApiMessage: string
     case POLE_CATEGORY_DESTROY_SUCCESS = '060104|pole.category.delete-success';
     case POLE_CATEGORY_HAS_DEVICE = '060105|pole.category.has-device';
 
+    case POLE_DEVICE_NOT_FOUND = '060200|pole.device.not-found';
+    case POLE_DEVICE_UPDATE_SUCCESS = '060201|pole.device.update-success';
+
+
     case STATION_IMPORT_SUCCESS = '070000|excel.import-success';
     case STATION_IMPORT_FAIL = '070001|excel.import-fail';
     case STATION_LIST = '070002|station.list';
+    case STATION_DETAIL = '0700009|station.detail';
     case STATION_NOT_FOUND = '070003|station.not-found';
     case STATION_STORE_SUCCESS = '070004|station.add-success';
     case STATION_UPDATE_SUCCESS = '070005|station.update-success';
     case STATION_DESTROY_SUCCESS = '070006|station.delete-success';
     case STATION_POLE_STORE_SUCCESS = '070007|station.pole.add-success';
     case STATION_POLE_REMOVE_SUCCESS = '070007|station.pole.remove-success';
+    case STATION_EXPORT_FAIL = '070008|excel.export-fail';
+
 
     case UPLOAD_TYPE_NOT_SUPPORT = '100000|file.type-not-support';
     case UPLOAD_SUCCESS = '100001|file.upload-success';

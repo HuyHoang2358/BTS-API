@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('stations', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->string('code')->unique();
-            $table->text('description')->nullable();
-            $table->foreignId('location_id')->nullable()->constrained()->on('locations')->nullOnDelete();
-            $table->foreignId('address_id')->nullable()->constrained()->on('addresses')->nullOnDelete();
+            $table->string('code');
+            $table->foreignId('station_category_id')->nullable()->constrained()->on('station_categories')->nullOnDelete();
+            $table->date('date')->nullable();
+            $table->integer('status')->nullable()->default(0);
             $table->timestamps();
         });
     }
