@@ -12,6 +12,7 @@ use App\Models\Station;
 use App\Models\StationPole;
 use App\Models\WindyArea;
 
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -56,9 +57,9 @@ class StressPoleController extends Controller
             return $b["DC"] - $a["DC"];
         });
         $level = 0;
-        $dc = 0;
+        $dc = -1;
         $ans = [];
-        $MAX_DELTA_DC = 2;
+        $MAX_DELTA_DC = 1;
         foreach ($devices as $device){
             if (abs($device["DC"] - $dc) > $MAX_DELTA_DC ){
                 $level++;
@@ -208,16 +209,16 @@ class StressPoleController extends Controller
             $data = $this->prepareStationData($pole_id, $devices);
 
             // save data to excel
-            //$this->exportExcel($data);
+            $this->exportExcel($data);
 
             // Call MSTower
-            //set_time_limit(300);
-            //shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            set_time_limit(300);
+            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
             // read data from excel
-            //$filePath = "D:\ungsuat\ung_suat.xlsx";
-           // $data = Excel::toArray((object)null, $filePath);
-           // $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
-            $ans["pole_stress"] = 85;
+            $filePath = "D:\ungsuat\ung_suat.xlsx";
+            $data = Excel::toArray((object)null, $filePath);
+            $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
+            //$ans["pole_stress"] = 85;
             return ApiResponse::success($ans  , ApiMessage::POLE_STRESS_SUCCESS);
         }
         catch (\Exception $e){

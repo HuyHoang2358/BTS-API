@@ -416,7 +416,7 @@ class DataFlowController extends Controller
         // Step 2: Image Processing
         $dataFolder = 'D:/OSPanel/domains/BTS-API/storage/app/public/data/';
         $srcImageFolder = 'E:/Viettel/Projects/BTS/data/bts/images/'.$station_code."/";
-        //$srcImageFolder = null;
+        $srcImageFolder = '';
         $imageMetadataJson = $dataFolder.$station_code.'/'.$date.'/processedData/'.$station_code.'_'.$date.'_images_metadata.json';
         ProcessingImage::dispatch($station_code, $date, $srcImageFolder, $srcImageFolder.'preview/', $imageMetadataJson);
 

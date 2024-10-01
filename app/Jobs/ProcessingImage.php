@@ -49,7 +49,7 @@ class ProcessingImage implements ShouldQueue
         }
 
         // Get all images in folder
-        if($imageFolder) $imageFilenames = DataProcessing::getImages($imageFolder);
+        if($imageFolder !== '') $imageFilenames = DataProcessing::getImages($imageFolder);
         $this->metadataArray = $metadataArray;
         $this->imageFilenames = $imageFilenames;
 
