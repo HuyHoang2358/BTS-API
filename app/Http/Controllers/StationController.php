@@ -47,7 +47,7 @@ class StationController extends Controller
         return ApiResponse::success($stations, ApiMessage::STATION_LIST);
     }
 
-    public function exportExcel(Request $request)
+    public function exportExcel(Request $request): JsonResponse
     {
         $input = $request->query('stations');
         $station_ids = [];
@@ -63,7 +63,9 @@ class StationController extends Controller
         $sheet = $spreadsheet->getSheetByName('CỘT');
         $startRow = 5;
         $startCol = 'A';
+        $name =  '';
         foreach ($stations as $index => $station) {
+            $name = $station->code;
             $startRow++;
             $pole = $station->poles->first();
             $sheet->setCellValue('A' . $startRow, $index + 1);
@@ -121,7 +123,7 @@ class StationController extends Controller
 
         $writer = new Xlsx($spreadsheet);
 
-        $filePath = 'temp/export/' . 'stations_report_' . time() . '.xlsx';
+        $filePath = 'temp/export/' . 'stations_report_' . $name. "_" . time() . '.xlsx';
         $saveFile =storage_path("app/public/".$filePath);
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save($saveFile);
