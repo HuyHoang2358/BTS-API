@@ -852,7 +852,7 @@
                 [
                     {
                         "name": "VIBA",
-                        "model": "Viba 0.6m",
+                        "model": "Viba0.6m",
                         "vendor": "Viba",
                         "device_tilt": 1,
                         "device_azimuth": 90,

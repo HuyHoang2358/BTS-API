@@ -173,7 +173,7 @@ class StressPoleController extends Controller
                     $startCol++;
                     $sheet->setCellValue($startCol.$row, $device["weight"]);
                     $startCol++;
-                    $sheet->setCellValue($startCol.$row, $device["DC"]);
+                    $sheet->setCellValue($startCol.$row, number_format($device["DC"],2));
                     $startCol++;
                     $sheet->setCellValue($startCol.$row, $device["quantity"]);
                     $startCol++;
@@ -182,12 +182,12 @@ class StressPoleController extends Controller
 
             $rruDevices = $pole["pole_devices"]["rru"] ?? [];
             foreach ($rruDevices as $device){
-                $sheet->setCellValue($startColRRU.$row, $device["DC"]);
+                $sheet->setCellValue($startColRRU.$row, number_format($device["DC"],2));
                 $startColRRU++;
             }
             $vibaDevices = $pole["pole_devices"]["viba"] ?? [];
             foreach ($vibaDevices as $device){
-                $sheet->setCellValue($startColViba.$row, $device["DC"]);
+                $sheet->setCellValue($startColViba.$row, number_format($device["DC"],2));
                 $startColViba++;
             }
         }
@@ -213,7 +213,7 @@ class StressPoleController extends Controller
 
             // Call MSTower
             set_time_limit(300);
-            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.11.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.12.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
             // read data from excel
             $filePath = "D:\ungsuat\ung_suat.xlsx";
             $data = Excel::toArray((object)null, $filePath);
