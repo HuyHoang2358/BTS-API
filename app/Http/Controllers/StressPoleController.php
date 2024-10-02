@@ -217,7 +217,7 @@ class StressPoleController extends Controller
             // read data from excel
             $filePath = "D:\ungsuat\ung_suat.xlsx";
             $data = Excel::toArray((object)null, $filePath);
-            $ans["pole_stress"] = str_replace(["_x000D_", "\n"], '', $data[1][3][89]);
+            $ans["pole_stress"] = (float)(str_replace(["_x000D_", "\n"], '', $data[1][3][89]))*100;
             //$ans["pole_stress"] = 85;
             return ApiResponse::success($ans  , ApiMessage::POLE_STRESS_SUCCESS);
         }
