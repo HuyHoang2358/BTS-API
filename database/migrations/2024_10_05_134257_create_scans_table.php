@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stations', function (Blueprint $table) {
+        Schema::create('scans', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->string('code');
-            $table->foreignId('station_category_id')->nullable()->constrained()->on('station_categories')->nullOnDelete();
-            $table->date('date')->nullable();
-            $table->integer('status')->nullable()->default(0);
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stations');
+        Schema::dropIfExists('scans');
     }
 };
