@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\ApiMessage;
 use App\Helpers\ApiResponse;
 use App\Models\Station;
-use App\Models\StationCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -23,11 +22,11 @@ class StationController extends Controller
 
     public function index(): JsonResponse
     {
-        $stationCategories = StationCategory::withCount('scans')
+        $stations = Station::withCount('scans')
             ->having('scans_count', '>', 0)->with(['scans', 'location', 'address','scans.models'])
-            ->get()->makeHidden(['location_id', 'address_id', 'stations_count']);
+            ->get()->makeHidden(['location_id', 'address_id', 'scans_count']);
 
-        return ApiResponse::success($stationCategories, ApiMessage::STATION_LIST);
+        return ApiResponse::success($stations, ApiMessage::STATION_LIST);
     }
 
     public function detail($id): JsonResponse

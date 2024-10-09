@@ -17,5 +17,6 @@ class GpsLocations extends Model
         'longitude_ref',
         'altitude_ref',
     ];
+    protected $hidden = ['created_at', 'updated_at'];
 
 }

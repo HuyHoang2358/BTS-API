@@ -13,7 +13,7 @@ class Image extends Model
 {
     protected $table = 'images';
     protected $fillable = [
-        'station_id',
+        'scan_id',
         'image_url',
         'preview_image_url',
         'filename',
@@ -21,7 +21,7 @@ class Image extends Model
         'height',
         'take_date'
     ];
-    protected $hidden = ['created_at', 'updated_at', 'station_id'];
+    protected $hidden = ['created_at', 'updated_at', 'scan_id'];
 
 
     public function gps(): HasOne

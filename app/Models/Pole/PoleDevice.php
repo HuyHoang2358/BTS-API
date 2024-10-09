@@ -2,8 +2,12 @@
 
 namespace App\Models\Pole;
 
+use App\Models\Device\Device;
+use App\Models\Geometry\GeometryBox;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @method static find($pole_device_id)
@@ -13,26 +17,38 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PoleDevice extends Model
 {
-   protected $table = 'pole_device';
+   protected $table = 'pole_devices';
    protected $fillable = [
        'pole_id',
        'device_id',
-       'attached_at',
-       'x',
-       'y',
-       'z',
-       'alpha',
-       'beta',
-       'gama',
+       'geometry_box_id',
+       'rotation',
+       'translation',
+       'vertices',
        'tilt',
        'azimuth',
-       'height',
-       'vertices',
-       'translation',
-       'rotation',
-       'suggested_devices',
+       'ai_device_width',
+       'ai_device_height',
+       'ai_device_depth',
        'suggested_img',
-       'description'
+       'user_id',
+       'is_active',
    ];
+    protected $hidden = ['created_at', 'updated_at'];
+
+    public function geometryBox():  BelongsTo
+    {
+        return $this->belongsTo(GeometryBox::class);
+    }
+
+    public function deviceInfo():  BelongsTo
+    {
+        return $this->belongsTo(Device::class, 'device_id', 'id');
+    }
+    public function suggestedDevices(): HasMany
+    {
+        return $this->hasMany(SuggestedDevice::class);
+    }
+
 
 }

@@ -19,7 +19,7 @@ class CreateProcessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'station_code' => 'required|exists:station_categories,code',
+            'station_code' => 'required|exists:stations,code',
             'date' => 'required|date',
         ];
     }

@@ -1,0 +1,62 @@
+{
+    "station_code": String, // mã cột
+    "date": "YYYY-MM-DD", // ngày chụp
+    "latitude": Double, // vĩ độ
+    "longitude": Double, // kinh độ
+    "address": String, // địa chỉ
+    "ply_path": String,// đường dẫn đến file ply
+    "images_path": String, // đường dẫn đến thư mục chứa ảnh
+    "image_preview_path": String, // đường dẫn đến ảnh preview
+    "poles": [
+        {
+            // thông tin cột 1
+            "type": String, // loại cột theo mã viết tắt DC, TD4, TD3, MNP, BLTL, ...
+            "z_plane": Double, // tọa độ z của mặt phẳng
+            "plane_altitude": Double, // độ cao của mặt phẳng
+            "gps_ratio": Double, // tỉ lệ gps
+            "stress_value": Double, // giá trị ứng suất cột
+            "height": Double, // chiều cao cột (m)
+            "mounting_position": String, // vị trí lắp đặt TM, DD
+            "house_height": Double, // chiều cao nhà (m)
+            "diameter_body_tube": String, // đường kính ống cột
+            "diameter_strut_tube": String, // đường kính ống thanh chống,
+            "diameter_top_tube": String, // đường kính mép trên cột
+            "diameter_bottom_tube": String, // đường kính mép dưới cột
+            "tilt_angle": Double, // góc nghiêng cột (degree)
+            "is_shielded": Int, // có chắn gió hay không 0 || 1
+            "size": String, // kích thước cột
+            "top_size": String, // kích thước đỉnh cột
+            "foot_size": String, // kích thước chân cột
+            "objects": [
+                {
+                    "box": {
+                        "x": Double, // tọa độ x
+                        "y": Double, // tọa độ y
+                        "z": Double, // tọa độ z
+                        "x_size": Double, // kích thước object theo trục x
+                        "y_size": Double, // kích thước object theo trục y
+                        "z_size": Double, // kích thước object theo trục z
+                        "rotation_x": Double, // góc quay theo trục x
+                        "rotation_y": Double, // góc quay theo trục y
+                        "rotation_z": Double, // góc quay theo trục z
+                    },
+                    "device_height": Double, // chiều cao thiết bị so với z_plane
+                    "level": Int, // tầng của object
+                    "width": Double, // chiều rộng object
+                    "height": Double, // chiều cao object
+                    "depth": Double, // chiều sâu object
+                    "tilt_angle": Double, // góc nghiêng object
+                    "azimuth_angle": Double, // góc phương vị object
+                    "suggested_devices": [
+                        "device_model1", "device_model2", "device_model3"
+                    ],
+                    "suggested_img": String, // đường dẫn đến ảnh mà nhìn rõ thiết bị
+                },
+            ]
+        },
+        {
+            // thông tin cột 2
+        }
+    ]
+
+}

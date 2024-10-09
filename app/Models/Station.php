@@ -29,4 +29,22 @@ class Station extends Model
     {
         return $this->belongsTo(Address::class);
     }
+
+    public function scans(): HasMany
+    {
+        return $this->hasMany(Scan::class);
+    }
+
+    protected $appends = ['pole_category', "stress_value"];
+    public function getPoleCategoryAttribute()
+    {
+       $poles = $this->scans()->first()->poles()->first();
+       return $poles->category;
+    }
+    public function getStressValueAttribute()
+    {
+        $poles = $this->scans()->first()->poles()->first();
+        return $poles->stress_value;
+    }
+
 }
