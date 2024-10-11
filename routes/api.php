@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StressPoleController;
@@ -141,6 +142,13 @@ Route::group(['middleware' => 'api'], function () {
     Route::group(['prefix' => 'scans'], function (){
         Route::get('/{id}', [ScanController::class, 'detail'])->name('scan.detail');
         Route::get('/{id}/images', [ScanController::class, 'images'])->name('scan.detail.images');
+
+        Route::get('/{id}/measurements', [ScanController::class, 'measurements'])->name('scan.detail.measurements');
+        Route::post('/{id}/measurements', [ScanController::class, 'storeMeasurement'])->name('scan.detail.store-measurements');
+        Route::patch('/{id}/measurements/{measurement_id}', [ScanController::class, 'updateMeasurement'])->name('scan.detail.update-measurements');
+
+        Route::get('/{id}/poles/{pole_id}/', [ScanController::class, 'historyPole'])->name('scan.detail.pole.history');
+        Route::patch('/{id}/poles/{pole_id}/', [ScanController::class, 'updatePoleParams'])->name('scan.detail.pole.update-params');
 
     });
 

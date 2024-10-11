@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `camera_poses` (
   CONSTRAINT `camera_poses_image_id_foreign` FOREIGN KEY (`image_id`) REFERENCES `images` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5927 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.camera_poses: ~406 rows (approximately)
+-- Dumping data for table bts.camera_poses: ~1,660 rows (approximately)
 INSERT INTO `camera_poses` (`id`, `image_id`, `geometry_cone_id`, `tvec`, `qvec`, `intrinsic_mtx`, `w2c`, `created_at`, `updated_at`) VALUES
 	(2779, 2780, 2780, '[0.6143129205832656,-3.8485879702375594,0.2219763087355928]', '[-0.20943196923571844,0.08223949807380632,0.8524330653835618,0.4719457429190367]', '[[4334.2400691237135,0,2745.272635185963],[0,4335.411864773598,1794.0681863611785],[0,0,1]]', '[]', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(2780, 2781, 2781, '[0.5109635531661909,-3.8622156650501833,0.19531499083989354]', '[-0.2092528355079398,0.08208958146685848,0.8526515026359048,0.4716566192678916]', '[[4334.2400691237135,0,2745.272635185963],[0,4335.411864773598,1794.0681863611785],[0,0,1]]', '[]', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -13408,7 +13408,7 @@ CREATE TABLE IF NOT EXISTS `geometry_boxes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.geometry_boxes: ~35 rows (approximately)
+-- Dumping data for table bts.geometry_boxes: ~103 rows (approximately)
 INSERT INTO `geometry_boxes` (`id`, `depth`, `width`, `height`, `pos_x`, `pos_y`, `pos_z`, `rotate_x`, `rotate_y`, `rotate_z`, `created_at`, `updated_at`) VALUES
 	(21, 1, 1, 1, 1, 1, 1, 1, 1, 1, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(22, 1, 1, 1, 1, 1, 1, 1, 1, 1, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -13531,7 +13531,7 @@ CREATE TABLE IF NOT EXISTS `geometry_cones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5928 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.geometry_cones: ~1,286 rows (approximately)
+-- Dumping data for table bts.geometry_cones: ~3,138 rows (approximately)
 INSERT INTO `geometry_cones` (`id`, `radius`, `height`, `radial_segments`, `pos_x`, `pos_y`, `pos_z`, `rotate_x`, `rotate_y`, `rotate_z`, `created_at`, `updated_at`) VALUES
 	(2780, 0.09, 0.15, 24, 0.21102777199058, 1.2544258553165, -3.6905509431052, 104.14043722785, 20.313802758739, 25.892924308494, '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(2781, 0.09, 0.15, 24, 0.12282422762827, 1.1936394868087, -3.7116142749899, 104.09751554146, 20.288792506854, 25.842164653172, '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -16696,7 +16696,7 @@ CREATE TABLE IF NOT EXISTS `gimbals` (
   CONSTRAINT `gimbals_image_id_foreign` FOREIGN KEY (`image_id`) REFERENCES `images` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=34268 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.gimbals: ~406 rows (approximately)
+-- Dumping data for table bts.gimbals: ~1,699 rows (approximately)
 INSERT INTO `gimbals` (`id`, `image_id`, `yaw_degree`, `pitch_degree`, `roll_degree`, `created_at`, `updated_at`) VALUES
 	(31120, 2780, NULL, NULL, NULL, '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(31121, 2781, NULL, NULL, NULL, '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -18415,7 +18415,7 @@ CREATE TABLE IF NOT EXISTS `gps_locations` (
   CONSTRAINT `gps_locations_image_id_foreign` FOREIGN KEY (`image_id`) REFERENCES `images` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=34268 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.gps_locations: ~406 rows (approximately)
+-- Dumping data for table bts.gps_locations: ~1,699 rows (approximately)
 INSERT INTO `gps_locations` (`id`, `image_id`, `latitude`, `longitude`, `altitude`, `latitude_ref`, `longitude_ref`, `altitude_ref`, `created_at`, `updated_at`) VALUES
 	(31120, 2780, '21 deg 3\' 30.92" N', '105 deg 51\' 54.79" E', '44 m Above Sea Level', 'North', 'East', 'Above Sea Level', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(31121, 2781, '21 deg 3\' 30.93" N', '105 deg 51\' 54.80" E', '44 m Above Sea Level', 'North', 'East', 'Above Sea Level', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -20134,7 +20134,7 @@ CREATE TABLE IF NOT EXISTS `images` (
   CONSTRAINT `images_scan_id_foreign` FOREIGN KEY (`scan_id`) REFERENCES `scans` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5928 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.images: ~406 rows (approximately)
+-- Dumping data for table bts.images: ~1,707 rows (approximately)
 INSERT INTO `images` (`id`, `scan_id`, `image_url`, `preview_image_url`, `filename`, `width`, `height`, `take_date`, `created_at`, `updated_at`) VALUES
 	(2780, 17, 'https://storage.viettelai.vn/public/BTS/HNI4067/2023-09-21/raw/DJI_0549.JPG', 'https://storage.viettelai.vn/public/BTS/HNI4067/2023-09-21/processedData/previewImages/DJI_0549.webp', 'DJI_0549.JPG', 5472, 3648, '2023-09-21', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(2781, 17, 'https://storage.viettelai.vn/public/BTS/HNI4067/2023-09-21/raw/DJI_0548.JPG', 'https://storage.viettelai.vn/public/BTS/HNI4067/2023-09-21/processedData/previewImages/DJI_0548.webp', 'DJI_0548.JPG', 5472, 3648, '2023-09-21', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -21871,13 +21871,33 @@ INSERT INTO `locations` (`id`, `latitude`, `longitude`, `height`, `created_at`, 
 	(25, 21.01287500, 105.70934722, 0.00000000, '2024-09-27 08:13:19', '2024-09-27 08:17:28'),
 	(26, 21.01645833, 105.71228333, 0.00000000, '2024-09-27 08:16:49', '2024-09-27 08:16:49');
 
+-- Dumping structure for table bts.measurements
+CREATE TABLE IF NOT EXISTS `measurements` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `scan_id` bigint unsigned NOT NULL,
+  `measurements` longtext COLLATE utf8mb4_unicode_ci,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `measurements_scan_id_foreign` (`scan_id`),
+  KEY `measurements_user_id_foreign` (`user_id`),
+  CONSTRAINT `measurements_scan_id_foreign` FOREIGN KEY (`scan_id`) REFERENCES `scans` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `measurements_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table bts.measurements: ~0 rows (approximately)
+INSERT INTO `measurements` (`id`, `scan_id`, `measurements`, `user_id`, `is_active`, `created_at`, `updated_at`) VALUES
+	(3, 27, '[]', 1, 1, '2024-10-11 07:56:40', '2024-10-11 07:56:40');
+
 -- Dumping structure for table bts.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table bts.migrations: ~37 rows (approximately)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -21917,7 +21937,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(56, '2024_10_05_154224_create_pole_devices_table', 34),
 	(58, '2024_10_06_101651_create_geometry_cones_table', 35),
 	(59, '2024_10_06_101652_create_camera_poses_table', 35),
-	(60, '2024_10_05_154954_create_suggested_devices_table', 36);
+	(60, '2024_10_05_154954_create_suggested_devices_table', 36),
+	(61, '2024_09_19_151744_create_model3_d_s_table', 37),
+	(62, '2024_09_21_180934_create_data_processing_processes_table', 37),
+	(64, '2024_10_11_095251_create_measurements_table', 38);
 
 -- Dumping structure for table bts.models
 CREATE TABLE IF NOT EXISTS `models` (
@@ -21935,7 +21958,7 @@ CREATE TABLE IF NOT EXISTS `models` (
   CONSTRAINT `models_scan_id_foreign` FOREIGN KEY (`scan_id`) REFERENCES `scans` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.models: ~6 rows (approximately)
+-- Dumping data for table bts.models: ~18 rows (approximately)
 INSERT INTO `models` (`id`, `scan_id`, `filename`, `url`, `preview_img`, `file_path`, `type`, `created_at`, `updated_at`) VALUES
 	(32, 17, 'HNI4067_2023-09-21_model.ply', 'https://storage.viettelai.vn/public/BTS/HNI4067/2023-09-21/processedData/model3D/HNI4067_2023-09-21_model3D.ply', '', '/public/BTS/HNI4067/2023-09-21/processedData/model3D/HNI4067_2023-09-21_model3D.ply', 'ply', '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(33, 17, 'HNI4067_2023-09-21_model.las', '2736433', '', '2736433', 'las', '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -21955,6 +21978,24 @@ INSERT INTO `models` (`id`, `scan_id`, `filename`, `url`, `preview_img`, `file_p
 	(68, 29, 'HTY1877_2024-09-19_model.ply', 'https://storage.viettelai.vn/public/BTS/HTY1877/2024-09-19/processedData/model3D/HTY1877_2024-09-19_model3D.ply', '', '/public/BTS/HTY1877/2024-09-19/processedData/model3D/HTY1877_2024-09-19_model3D.ply', 'ply', '2024-10-10 03:05:59', '2024-10-10 03:05:59'),
 	(69, 29, 'HTY1877_2024-09-19_model.las', '2753957', '', '2753957', 'las', '2024-10-10 03:05:59', '2024-10-10 03:05:59'),
 	(70, 29, 'HTY1877_2024-09-19_metadata.json', 'https://storage.viettelai.vn/public/BTS/HTY1877/2024-09-19/processedData/model3D/potree/HTY1877_2024-09-19_metadata.json', '', '/public/BTS/HTY1877/2024-09-19/processedData/model3D/potree/HTY1877_2024-09-19_metadata.json', 'potree', '2024-10-10 03:06:00', '2024-10-10 03:06:00');
+
+-- Dumping structure for table bts.model_3ds
+CREATE TABLE IF NOT EXISTS `model_3ds` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `station_id` bigint unsigned NOT NULL,
+  `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preview_img` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `model_3ds_station_id_foreign` (`station_id`),
+  CONSTRAINT `model_3ds_station_id_foreign` FOREIGN KEY (`station_id`) REFERENCES `stations` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table bts.model_3ds: ~0 rows (approximately)
 
 -- Dumping structure for table bts.password_reset_tokens
 CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
@@ -22004,7 +22045,7 @@ CREATE TABLE IF NOT EXISTS `poles` (
   CONSTRAINT `poles_scan_id_foreign` FOREIGN KEY (`scan_id`) REFERENCES `scans` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.poles: ~3 rows (approximately)
+-- Dumping data for table bts.poles: ~7 rows (approximately)
 INSERT INTO `poles` (`id`, `scan_id`, `pole_category_id`, `name`, `z_plane`, `plane_altitude`, `gps_ratio`, `stress_value`, `created_at`, `updated_at`) VALUES
 	(7, 17, 4, 'Cột Cóc_1', -5.8906704916341, -5.8906704916341, 2443.2512755103, 0, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(8, 17, 4, 'Cột Cóc_2', -5.8906704916341, -5.8906704916341, 2443.2512755103, 0, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -22066,7 +22107,7 @@ CREATE TABLE IF NOT EXISTS `pole_devices` (
   CONSTRAINT `pole_devices_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.pole_devices: ~22 rows (approximately)
+-- Dumping data for table bts.pole_devices: ~59 rows (approximately)
 INSERT INTO `pole_devices` (`id`, `pole_id`, `device_id`, `geometry_box_id`, `rotation`, `translation`, `vertices`, `tilt`, `azimuth`, `ai_device_width`, `ai_device_height`, `ai_device_depth`, `suggested_img`, `user_id`, `is_active`, `created_at`, `updated_at`) VALUES
 	(21, 7, 224, 21, '[291.80000000000024,0,342.39999999999986]', '[-0.08180803964420279,-4.265680432466106,5.624056427953125]', '[[0.01988884,-0.57918842,-4.42583521],[0.13767062,-0.52871473,-4.42516429],[0.16485112,-0.59213159,-4.42588684],[0.04706934,-0.64260528,-4.42655776],[0.01945519,-0.58656156,-3.7950213],[0.13723697,-0.53608787,-3.79435038],[0.16441747,-0.59950473,-3.79507293],[0.04663569,-0.64997842,-3.79574385]]', NULL, 90, 301, 1412, 181, '', 0, 1, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(22, 7, 224, 22, '[287.39999999999964,0,104.19999999999993]', '[0.4701919603557969,-4.4876804324660995,5.924056427953125]', '[[-0.13813796,-0.1509533,-4.40236503],[-0.19049188,-0.26585855,-4.40038144],[-0.25236838,-0.23765981,-4.40002539],[-0.20001446,-0.12275456,-4.40200898],[-0.13112643,-0.14341686,-3.78073597],[-0.18348035,-0.25832211,-3.77875238],[-0.24535685,-0.23012337,-3.77839633],[-0.19300293,-0.11521812,-3.78037992]]', NULL, 90, 301, 1412, 181, '', 0, 1, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -22163,7 +22204,7 @@ CREATE TABLE IF NOT EXISTS `pole_params` (
   CONSTRAINT `pole_params_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.pole_params: ~3 rows (approximately)
+-- Dumping data for table bts.pole_params: ~7 rows (approximately)
 INSERT INTO `pole_params` (`id`, `pole_id`, `height`, `is_roof`, `house_height`, `diameter_body_tube`, `diameter_strut_tube`, `diameter_top_tube`, `diameter_bottom_tube`, `tilt_angle`, `is_shielded`, `size`, `foot_size`, `top_size`, `is_active`, `user_id`, `description`, `created_at`, `updated_at`) VALUES
 	(6, 7, 5, 1, NULL, '60x4.5', NULL, NULL, NULL, 1, 0, '600x600x600', NULL, NULL, 1, 0, 'HNI4067 2023-09-21', '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(7, 8, 5, 1, NULL, '60x4.5', NULL, NULL, NULL, 1, 0, '600x600x600', NULL, NULL, 1, 0, 'HNI4067 2023-09-21', '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -22185,7 +22226,7 @@ CREATE TABLE IF NOT EXISTS `processes` (
   CONSTRAINT `processes_scan_id_foreign` FOREIGN KEY (`scan_id`) REFERENCES `scans` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.processes: ~2 rows (approximately)
+-- Dumping data for table bts.processes: ~6 rows (approximately)
 INSERT INTO `processes` (`id`, `scan_id`, `status`, `created_at`, `updated_at`) VALUES
 	(16, 17, '0', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(23, 24, '0', '2024-10-10 03:01:13', '2024-10-10 03:01:13'),
@@ -22193,6 +22234,20 @@ INSERT INTO `processes` (`id`, `scan_id`, `status`, `created_at`, `updated_at`) 
 	(26, 27, '0', '2024-10-10 03:05:05', '2024-10-10 03:05:05'),
 	(27, 28, '0', '2024-10-10 03:05:40', '2024-10-10 03:05:40'),
 	(28, 29, '0', '2024-10-10 03:05:57', '2024-10-10 03:05:57');
+
+-- Dumping structure for table bts.processing_data_processes
+CREATE TABLE IF NOT EXISTS `processing_data_processes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `station_id` bigint unsigned NOT NULL,
+  `status` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `processing_data_processes_station_id_foreign` (`station_id`),
+  CONSTRAINT `processing_data_processes_station_id_foreign` FOREIGN KEY (`station_id`) REFERENCES `stations` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table bts.processing_data_processes: ~0 rows (approximately)
 
 -- Dumping structure for table bts.process_logs
 CREATE TABLE IF NOT EXISTS `process_logs` (
@@ -22206,7 +22261,7 @@ CREATE TABLE IF NOT EXISTS `process_logs` (
   CONSTRAINT `process_logs_process_step_id_foreign` FOREIGN KEY (`process_step_id`) REFERENCES `process_steps` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.process_logs: ~30 rows (approximately)
+-- Dumping data for table bts.process_logs: ~86 rows (approximately)
 INSERT INTO `process_logs` (`id`, `process_step_id`, `logs`, `created_at`, `updated_at`) VALUES
 	(134, 47, 'Khởi tạo dữ liệu trạmHNI4067 2023-09-21', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(135, 48, 'Bắt đầu xử lý hình ảnh 2D', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -22311,7 +22366,7 @@ CREATE TABLE IF NOT EXISTS `process_steps` (
   CONSTRAINT `process_steps_process_id_foreign` FOREIGN KEY (`process_id`) REFERENCES `processes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.process_steps: ~8 rows (approximately)
+-- Dumping data for table bts.process_steps: ~24 rows (approximately)
 INSERT INTO `process_steps` (`id`, `process_id`, `step_number`, `step_name`, `current_progress`, `total_progress`, `status`, `created_at`, `updated_at`) VALUES
 	(47, 16, 1, 'Khởi tạo', 1, 1, 'Hoàn thành', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
 	(48, 16, 2, 'Xử lý hình ảnh 2D', 0, 186, 'Đang xử lý', '2024-10-06 15:50:07', '2024-10-06 15:50:07'),
@@ -22433,7 +22488,7 @@ CREATE TABLE IF NOT EXISTS `scans` (
   CONSTRAINT `scans_station_id_foreign` FOREIGN KEY (`station_id`) REFERENCES `stations` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.scans: ~3 rows (approximately)
+-- Dumping data for table bts.scans: ~6 rows (approximately)
 INSERT INTO `scans` (`id`, `name`, `status`, `is_active`, `date`, `station_id`, `created_at`, `updated_at`) VALUES
 	(17, 'HNI4067_2023-09-21', 'Hoàn thành', 1, '2023-09-21', 22, '2024-10-06 15:50:07', '2024-10-06 15:50:08'),
 	(24, 'HAN1188_2023-09-19', 'Hoàn thành', 1, '2023-09-19', 23, '2024-10-10 03:01:13', '2024-10-10 03:01:15'),
@@ -22507,7 +22562,7 @@ CREATE TABLE IF NOT EXISTS `suggested_devices` (
   CONSTRAINT `suggested_devices_pole_device_id_foreign` FOREIGN KEY (`pole_device_id`) REFERENCES `pole_devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=361 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.suggested_devices: ~47 rows (approximately)
+-- Dumping data for table bts.suggested_devices: ~144 rows (approximately)
 INSERT INTO `suggested_devices` (`id`, `pole_device_id`, `device_id`, `created_at`, `updated_at`) VALUES
 	(81, 21, 224, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
 	(82, 22, 224, '2024-10-06 15:50:08', '2024-10-06 15:50:08'),
@@ -22670,9 +22725,9 @@ CREATE TABLE IF NOT EXISTS `telescope_entries` (
   KEY `telescope_entries_family_hash_index` (`family_hash`),
   KEY `telescope_entries_created_at_index` (`created_at`),
   KEY `telescope_entries_type_should_display_on_index_index` (`type`,`should_display_on_index`)
-) ENGINE=InnoDB AUTO_INCREMENT=743097 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=748862 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.telescope_entries: ~130,734 rows (approximately)
+-- Dumping data for table bts.telescope_entries: ~1,580 rows (approximately)
 
 -- Dumping structure for table bts.telescope_entries_tags
 CREATE TABLE IF NOT EXISTS `telescope_entries_tags` (
@@ -22683,7 +22738,7 @@ CREATE TABLE IF NOT EXISTS `telescope_entries_tags` (
   CONSTRAINT `telescope_entries_tags_entry_uuid_foreign` FOREIGN KEY (`entry_uuid`) REFERENCES `telescope_entries` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table bts.telescope_entries_tags: ~123,556 rows (approximately)
+-- Dumping data for table bts.telescope_entries_tags: ~1,812 rows (approximately)
 
 -- Dumping structure for table bts.telescope_monitoring
 CREATE TABLE IF NOT EXISTS `telescope_monitoring` (

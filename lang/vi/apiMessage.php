@@ -105,6 +105,10 @@ return [
         'pole' => [
             'add-success' => 'Thêm thông tin cột vào trạm BTS thành công',
             'remove-success' => 'Xóa thông tin cột khỏi trạm BTS thành công',
+        ],
+        "measurement"=> [
+            'list' => 'Danh sách các thông số đo lường',
+            'add-success' => 'Thêm thông số đo lường thành công',
         ]
     ],
     'file' => [

@@ -96,6 +96,8 @@ enum ApiMessage: string
     case STATION_POLE_STORE_SUCCESS = '070007|station.pole.add-success';
     case STATION_POLE_REMOVE_SUCCESS = '070007|station.pole.remove-success';
     case STATION_EXPORT_FAIL = '070008|excel.export-fail';
+    case STATION_MEASUREMENT_INDEX = '070010|station.measurement.list';
+    case STATION_MEASUREMENT_ADD = '070010|station.measurement.add-success';
 
 
     case UPLOAD_TYPE_NOT_SUPPORT = '100000|file.type-not-support';
