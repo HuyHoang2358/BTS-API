@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('process_logs', function (Blueprint $table) {
+        Schema::create('scans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('process_step_id')->constrained('process_steps')->cascadeOnDelete();
-            $table->text('logs');
             $table->timestamps();
         });
     }
@@ -24,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('process_logs');
+        Schema::dropIfExists('scans');
     }
 };

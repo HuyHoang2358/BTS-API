@@ -9,7 +9,7 @@
     "operator": "VTNet",
     "poles": [
         {
-            "type": "TD",
+            "type": "TD4",
             "mounting_position": "DD",
             "tower_height": 42,
             "tower_tilt": 1,

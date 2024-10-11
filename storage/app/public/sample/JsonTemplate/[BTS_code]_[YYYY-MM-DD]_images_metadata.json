@@ -1,0 +1,46 @@
+{
+    "IMG1.JPG": {
+        "w2c": [[Double, Double, Double, Double],[],[],[]],
+        "qvec": [Double, Double, Double, Double],
+        "tvec": [Double, Double, Double],
+        "camera_id": Int,
+        "nerf_name": String,
+        "intrinsic_mtx": [[Double, Double, Double],[],[]],
+        "cam_cent": [Double, Double, Double], //  [x, y, z]
+        "euler_angle": [Double, Double, Double], // [x, y, z]
+        "take_date": "YYYY-MM-DD",
+        "width": Int,
+        "height": Int,
+        "GPSLatitudeRef": String,
+        "GPSLongitudeRef": String,
+        "GPSAltitudeRef": String,
+        "GPSLatitude": String,
+        "GPSLongitude": String,
+        "GPSAltitude": String,
+        "GimbalRollDegree": Double,
+        "GimbalYawDegree": Double,
+        "GimbalPitchDegree": Double,
+    },
+    "IMG2.JPG": {
+        "w2c": [[Double, Double, Double, Double],[],[],[]],
+        "qvec": [Double, Double, Double, Double],
+        "tvec": [Double, Double, Double],
+        "camera_id": Int,
+        "nerf_name": String,
+        "intrinsic_mtx": [[Double, Double, Double],[],[]],
+        "cam_cent": [Double, Double, Double], //  [x, y, z]
+        "euler_angle": [Double, Double, Double], // [x, y, z]
+        "take_date": "YYYY-MM-DD",
+        "width": Int,
+        "height": Int,
+        "GPSLatitudeRef": String,
+        "GPSLongitudeRef": String,
+        "GPSAltitudeRef": String,
+        "GPSLatitude": String,
+        "GPSLongitude": String,
+        "GPSAltitude": String,
+        "GimbalRollDegree": Double,
+        "GimbalYawDegree": Double,
+        "GimbalPitchDegree": Double,
+    }
+}

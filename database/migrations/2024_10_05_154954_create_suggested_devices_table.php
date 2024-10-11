@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('processing_data_processes', function (Blueprint $table) {
+        Schema::create('suggested_devices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('station_id')->constrained('stations')->cascadeOnDelete();
-            $table->text('status')->nullable();
+            $table->foreignId('pole_device_id')->constrained('pole_devices')->cascadeOnDelete();
+            $table->foreignId('device_id')->constrained('devices')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('processing_data_processes');
+        Schema::dropIfExists('suggested_devices');
     }
 };

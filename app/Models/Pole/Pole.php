@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @method static create(mixed $validated)
@@ -22,28 +23,13 @@ class Pole extends Model
     protected $table = 'poles';
 
     protected $fillable = [
-        'name',
-        'height',
-        'is_roof',
-        'house_height',
+        'scan_id',
         'pole_category_id',
-        'size',
-        'diameter_body_tube',
-        'diameter_strut_tube',
-        'diameter_top_tube',
-        'diameter_bottom_tube',
-        'foot_size',
-        'top_size',
-        'structure',
+        'name',
         'z_plane',
-        'north_direction',
+        'plane_altitude',
         'gps_ratio',
-        'tilt_angle',
-        'param_a',
-        'param_b',
-        'description',
         'stress_value',
-        'is_shielded'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -51,13 +37,6 @@ class Pole extends Model
     protected static function boot(): void
     {
         parent::boot();
-        static::deleting(function ($pole) {
-            // detach all poles devices
-            $pole->devices()->detach();
-
-            // delete all params;
-            $pole->params()->delete();
-        });
     }
 
     public function category(): BelongsTo
@@ -65,33 +44,19 @@ class Pole extends Model
         return $this->belongsTo(PoleCategory::class, 'pole_category_id');
     }
 
-    public function params(): HasMany
+    public function poleDevices(): HasMany
+    {
+        return $this->hasMany(PoleDevice::class)->where('is_active', 1);
+    }
+
+    public function poleParam(): HasOne
+    {
+        return $this->hasOne(PoleParam::class, 'pole_id', 'id')->where('is_active', 1);
+    }
+    public function poleParams(): HasMany
     {
         return $this->hasMany(PoleParam::class);
     }
 
-    public function devices(): BelongsToMany
-    {
-        return $this->belongsToMany(Device::class, 'pole_device', 'pole_id', 'device_id')
-            ->withPivot('id','attached_at', 'x', 'y', 'z', 'alpha', 'beta', 'gama','rotation','translation', 'vertices','tilt', 'azimuth','height','suggested_devices', 'suggested_img','description');
-    }
-    // add station code to atrribute of pole
 
-
-    public function stations(): BelongsToMany
-    {
-        return $this->belongsToMany(Station::class, 'station_pole', 'pole_id', 'station_id')
-            ->withPivot('built_on');
-    }
-
-    protected $appends = ['station_code'];
-
-    public function getStationCodeAttribute()
-    {
-        $stationPole = StationPole::where('pole_id', $this->id)->first();
-        if (!$stationPole) {
-            return null;
-        }
-        return $stationPole->station_code;
-    }
 }

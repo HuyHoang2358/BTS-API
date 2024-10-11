@@ -2,8 +2,9 @@
 
 namespace App\Models\Image;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Geometry\GeometryCone;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CameraPose extends Model
 {
@@ -13,8 +14,13 @@ class CameraPose extends Model
         'w2c',
         'tvec',
         'qvec',
-        'cent_point',
-        'euler_angle',
         'intrinsic_mtx',
+        'geometry_cone_id'
     ];
+    protected $hidden = ['created_at', 'updated_at'];
+
+    public function geometryCone(): BelongsTo
+    {
+        return $this->belongsTo(GeometryCone::class);
+    }
 }

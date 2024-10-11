@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\DataFlowController;
-use App\Http\Controllers\StationCategoryController;
+use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\ProcessController;
+use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StressPoleController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -33,17 +34,6 @@ Route::group(['middleware' => 'api'], function () {
     // Upload Manager
     Route::group(['prefix' => 'upload'], function (){
         Route::post('/{type}', [UploadController::class, 'uploadFile'])->name('upload.file');
-    });
-
-
-    // Station Category Manager
-    Route::group(['prefix' => 'stations-categories'], function (){
-        Route::get('/', [StationCategoryController::class, 'index'])->name('station.category.index');
-        Route::post('/', [StationCategoryController::class, 'store'])->name('station.category.store');
-        Route::patch('/{id}', [StationCategoryController::class, 'update'])->name('station.category.update');
-        Route::delete('/{id}', [StationCategoryController::class, 'destroy'])->name('station.category.destroy');
-        //Route::post('/excel/import', [DeviceCategoryController::class, 'importExcel'])->name('device.category.import-excel');
-        //Route::get('/excel/export', [DeviceCategoryController::class, 'exportExcel'])->name('device.category.export-excel');
     });
 
     // Device Category Manager
@@ -148,6 +138,20 @@ Route::group(['middleware' => 'api'], function () {
         Route::get('/excel/export', [StationController::class, 'exportExcel'])->name('station.excel.export');
     });
 
+    // Station Scans Manager
+    Route::group(['prefix' => 'scans'], function (){
+        Route::get('/{id}', [ScanController::class, 'detail'])->name('scan.detail');
+        Route::get('/{id}/images', [ScanController::class, 'images'])->name('scan.detail.images');
+
+        Route::get('/{id}/measurements', [ScanController::class, 'measurements'])->name('scan.detail.measurements');
+        Route::post('/{id}/measurements', [ScanController::class, 'storeMeasurement'])->name('scan.detail.store-measurements');
+        Route::patch('/{id}/measurements/{measurement_id}', [ScanController::class, 'updateMeasurement'])->name('scan.detail.update-measurements');
+
+        Route::get('/{id}/poles/{pole_id}/', [ScanController::class, 'historyPole'])->name('scan.detail.pole.history');
+        Route::patch('/{id}/poles/{pole_id}/', [ScanController::class, 'updatePoleParams'])->name('scan.detail.pole.update-params');
+
+    });
+
 
     // Pole Manager
     Route::group(['prefix' => 'poles'], function (){
@@ -174,9 +178,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('/calculate-pole-stress', [StressPoleController::class, 'poleStress']);
 
     // Processing data  process
-    Route::group(['prefix' => 'processing-data-processes'], function (){
-        Route::get('/', [DataFlowController::class, 'index'])->name('data-processing.process.index');
-        Route::post('/', [DataFlowController::class, 'store'])->name('data-processing.process.store');
+    Route::group(['prefix' => 'processes'], function (){
+        Route::post('/', [ProcessController::class, 'store'])->name('process.store');
     });
 
 });
@@ -185,11 +188,6 @@ Route::group(['middleware' => 'api'], function () {
 Route::get('/', function(){
     return response()->json(['message' => 'Hello World!']);
 });
-
-
-Route::get('/test', [DataFlowController::class, 'test'])->name('data-processing.process.test');
-
-
 
 
 
