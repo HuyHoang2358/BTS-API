@@ -98,6 +98,7 @@ enum ApiMessage: string
     case STATION_EXPORT_FAIL = '070008|excel.export-fail';
     case STATION_MEASUREMENT_INDEX = '070010|station.measurement.list';
     case STATION_MEASUREMENT_ADD = '070010|station.measurement.add-success';
+    case STATION_SCAN_POLE_PARAM = '070011|station.scan.pole.param.update-success';
 
 
     case UPLOAD_TYPE_NOT_SUPPORT = '100000|file.type-not-support';
@@ -109,6 +110,9 @@ enum ApiMessage: string
     case ERROR = '1001|An error occurred';
     case USER_NOT_FOUND = '1002|User not found';
     case USER_CREATED = '1003|User created successfully';
+
+    case COMMENT_STORE_SUCCESS = '080000|comment.add-success';
+    case COMMENT_LIST = '080000|comment.list';
 
     // Rule for code format:
     // 1_XXX : Auth

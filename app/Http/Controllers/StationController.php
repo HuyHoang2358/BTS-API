@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ApiMessage;
 use App\Helpers\ApiResponse;
+use App\Models\Scan;
 use App\Models\Station;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,12 +49,12 @@ class StationController extends Controller
 
     public function exportExcel(Request $request): JsonResponse
     {
-        $input = $request->query('stations');
-        $station_ids = [];
-        foreach ($input as $item) $station_ids[] = (int)$item;
+        $input = $request->query('scans');
+        $scan_ids = [];
+        foreach ($input as $item) $scan_ids[] = (int)$item;
 
-        $stations = Station::whereIn('id', $station_ids)->get();
-        if (count($stations) == 0) return ApiResponse::error(["params" =>  $input], ApiMessage::STATION_EXPORT_FAIL, 404);
+        $scans = Scan::whereIn('id', $scan_ids)->get();
+        if (count($scans) == 0) return ApiResponse::error(["params" =>  $input], ApiMessage::STATION_EXPORT_FAIL, 404);
 
 
         // Mở file Excel
@@ -61,61 +62,60 @@ class StationController extends Controller
         $spreadsheet = IOFactory::load($filePath);
         $sheet = $spreadsheet->getSheetByName('CỘT');
         $startRow = 5;
-        $startCol = 'A';
         $name =  '';
-        foreach ($stations as $index => $station) {
-            $name = $station->code;
+        foreach ($scans as $index => $scan) {
+            $name = $scan->station->code;
             $startRow++;
-            $pole = $station->poles->first();
-            $sheet->setCellValue('A' . $startRow, $index + 1);
-            $sheet->setCellValue('B' . $startRow, 'Khu vực 1');
-            $sheet->setCellValue('C' . $startRow, substr($station->code, 0, 3));
-            $sheet->setCellValue('D' . $startRow, $station->code);
-            $sheet->setCellValue('E' . $startRow, $station->detail->location->longitude);
-            $sheet->setCellValue('F' . $startRow, $station->detail->location->latitude);
-            $sheet->setCellValue('G' . $startRow, $station->detail->address->address_detail);
-            $sheet->setCellValue('H' . $startRow, $station->detail->address->commune->windyArea->name);
-            $sheet->setCellValue('I' . $startRow, $pole->category->code);
-            $sheet->setCellValue('J' . $startRow, $pole->is_roof ? "TM" : "DD");
+            $pole = $scan->poles->first();
+            $sheet->setCellValue('A' . $startRow, $index + 1); // STT
+            $sheet->setCellValue('B' . $startRow, 'Khu vực 1'); // Khu vực
+            $sheet->setCellValue('C' . $startRow, substr($scan->station->code, 0, 3)); // Mã Tỉnh
+            $sheet->setCellValue('D' . $startRow, $scan->station->code); // Mã Trạm
+            $sheet->setCellValue('E' . $startRow, $scan->station->location->longitude); // Kinh độ
+            $sheet->setCellValue('F' . $startRow, $scan->station->location->latitude); // Vĩ độ
+            $sheet->setCellValue('G' . $startRow, $scan->station->address->address_detail); // Vị trí
+            $sheet->setCellValue('H' . $startRow, $scan->station->address->commune->windyArea->name); // Vùng gió
+            $sheet->setCellValue('I' . $startRow, $pole->category->code); // Loại cột
+            $sheet->setCellValue('J' . $startRow, $pole->poleParam->is_roof ? "TM" : "DD"); // Trên mái, dưới đất
             $sheet->setCellValue('K' . $startRow, "Tự động");
-            $sheet->setCellValue('L' . $startRow, $pole->height);
+            $sheet->setCellValue('L' . $startRow, $pole->poleParam->height);
             $sheet->setCellValue('M' . $startRow, "Tự động");
-            $sheet->setCellValue('N' . $startRow, $pole->house_height ?? 'X');
+            $sheet->setCellValue('N' . $startRow, $pole->poleParam->house_height ?? 'X');
             $sheet->setCellValue('O' . $startRow, "X");
-            $sheet->setCellValue('P' . $startRow, $pole->foot_size ?? 'X');
-            $sheet->setCellValue('Q' . $startRow, $pole->top_size ??  'X');
-            $sheet->setCellValue('R' . $startRow, $pole->foot_size || $pole->top_size ? 'Tự động' : 'X');
-            $sheet->setCellValue('S' . $startRow, $pole->diameter_body_tube ?? 'X');
-            $sheet->setCellValue('T' . $startRow, $pole->diameter_strut_tube ?? 'X');
-            $sheet->setCellValue('U' . $startRow, $pole->diameter_body_tube || $pole->diameter_strut_tube ? 'Tự động' : 'X');
-            $sheet->setCellValue('V' . $startRow, $pole->tilt_angle ?? 'X');
-            $sheet->setCellValue('W' . $startRow, $pole->tilt_angle ? 'Tự động' : 'X');
+            $sheet->setCellValue('P' . $startRow, $pole->poleParam->foot_size ?? 'X');
+            $sheet->setCellValue('Q' . $startRow, $pole->poleParam->top_size ??  'X');
+            $sheet->setCellValue('R' . $startRow, $pole->poleParam->foot_size || $pole->poleParam->top_size ? 'Tự động' : 'X');
+            $sheet->setCellValue('S' . $startRow, $pole->poleParam->diameter_body_tube ?? 'X');
+            $sheet->setCellValue('T' . $startRow, $pole->poleParam->diameter_strut_tube ?? 'X');
+            $sheet->setCellValue('U' . $startRow, $pole->poleParam->diameter_body_tube || $pole->poleParam->diameter_strut_tube ? 'Tự động' : 'X');
+            $sheet->setCellValue('V' . $startRow, $pole->poleParam->tilt_angle ?? 'X');
+            $sheet->setCellValue('W' . $startRow, $pole->poleParam->tilt_angle ? 'Tự động' : 'X');
         }
         $sheet = $spreadsheet->getSheetByName('THIẾT BỊ TRÊN CỘT');
         $startRow = 4;
-        foreach ($stations as $index => $station) {
+        foreach ($scans as $index => $scan) {
             $startRow++;
-            $pole = $station->poles->first();
-            $sheet->setCellValue('A' . $startRow, ($index + 1) . "." . $station->code);
-            $devices = $pole->devices;
-            foreach ($devices as $device) {
+            $pole = $scan->poles->first();
+            $sheet->setCellValue('A' . $startRow, ($index + 1) . "." . $scan->station->code);
+            $poleDevices = $pole->poleDevices;
+            foreach ($poleDevices as $poleDevice) {
                 $startRow++;
-                $sheet->setCellValue('A' . $startRow, $station->code);
-                $sheet->setCellValue('B' . $startRow, $device->category->name);
-                $sheet->setCellValue('C' . $startRow, $device->name);
-                $sheet->setCellValue('D' . $startRow, $device->vendor != null ? $device->vendor->name: '');
-                $sheet->setCellValue('E' . $startRow, $device->height);
-                $sheet->setCellValue('F' . $startRow, $device->width);
-                $sheet->setCellValue('G' . $startRow, $device->depth);
-                $sheet->setCellValue('H' . $startRow, $device->weight);
+                $sheet->setCellValue('A' . $startRow, $scan->station->code);
+                $sheet->setCellValue('B' . $startRow, $poleDevice->deviceInfo->category->name);
+                $sheet->setCellValue('C' . $startRow, $poleDevice->deviceInfo->name);
+                $sheet->setCellValue('D' . $startRow, $poleDevice->deviceInfo->vendor != null ? $poleDevice->deviceInfo->vendor->name: '');
+                $sheet->setCellValue('E' . $startRow, $poleDevice->deviceInfo->length);
+                $sheet->setCellValue('F' . $startRow, $poleDevice->deviceInfo->width);
+                $sheet->setCellValue('G' . $startRow, $poleDevice->deviceInfo->depth);
+                $sheet->setCellValue('H' . $startRow, $poleDevice->deviceInfo->weight);
                 $sheet->setCellValue('I' . $startRow, 'Tự động');
-                $sheet->setCellValue('J' . $startRow, $device->pivot->height ?? 0 + $pole->house_height?? 0 );
+                $sheet->setCellValue('J' . $startRow, $poleDevice->height ?? 0 + $pole->poleParam->house_height ?? 0 );
                 $sheet->setCellValue('K' . $startRow, 'Tự động');
-                $sheet->setCellValue('L' . $startRow, $device->pivot->height ?? 0);
+                $sheet->setCellValue('L' . $startRow, $poleDevice->height ?? 0);
                 $sheet->setCellValue('M' . $startRow, 'Tự động');
-                $sheet->setCellValue('N' . $startRow, $device->pivot->tilt ?? 0);
+                $sheet->setCellValue('N' . $startRow, $poleDevice->tilt ?? 0);
                 $sheet->setCellValue('O' . $startRow, 'Tự động');
-                $sheet->setCellValue('P' . $startRow, $device->pivot->azimuth ?? 0);
+                $sheet->setCellValue('P' . $startRow, $poleDevice->azimuth ?? 0);
                 $sheet->setCellValue('Q' . $startRow, 'Tự động');
             }
         }

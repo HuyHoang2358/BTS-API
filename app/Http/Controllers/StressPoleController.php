@@ -22,11 +22,10 @@ class StressPoleController extends Controller
     {
         $pole = Pole::find($pole_id);
         $data['pole'] = $pole;
-        $station_pole = StationPole::where('pole_id', $pole_id)->first();
+        $scan = $pole->scan;
+        $station = $scan->station;
 
-        $station = Station::where('id', $station_pole->station_id)->with(['detail.address','detail.address.commune'])->first();
-
-        $data["windy_area"] = WindyArea::findOrFail($station->detail->address->commune->windy_area_id)->name;
+        $data["windy_area"] = WindyArea::findOrFail($station->address->commune->windy_area_id)->name;
         $data["station_code"] = $station->code;
         $data["poles"] = [];
 
@@ -115,13 +114,14 @@ class StressPoleController extends Controller
 
     protected function preparePoleData($pole, $devices): array
     {
+        $poleParam = $pole->poleParam;
         // Get information of pole
-        $data["pole_height"] = $pole->height;
-        $data["pole_is_roof"] = $pole->is_roof ? "TM" : "DD";
-        $data["pole_house_height"] = $pole->house_height;
+        $data["pole_height"] = $poleParam->height;
+        $data["pole_is_roof"] = $poleParam->is_roof ? "TM" : "DD";
+        $data["pole_house_height"] = $poleParam->house_height;
         $data["pole_category"] = $pole->category->code;
-        $data['pole_size'] = $pole->size;
-        $data['pole_diameter_body_tube'] = $pole->diameter_body_tube;
+        $data['pole_size'] = $poleParam->size;
+        $data['pole_diameter_body_tube'] = $poleParam->diameter_body_tube;
         if (str_contains($data["pole_category"], 'TD'))
             $data["pole_category"] = "TD";
 
@@ -212,13 +212,13 @@ class StressPoleController extends Controller
             $this->exportExcel($data);
 
             // Call MSTower
-            set_time_limit(300);
-            shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.12.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
+            //set_time_limit(300);
+            //shell_exec('UiRobot.exe -file D:/ungsuat/MSTower.1.0.12.nupkg -input "{\"excelPath\":\"D:\\\\ungsuat\\\\ung_suat.xlsx\"}"');
             // read data from excel
-            $filePath = "D:\ungsuat\ung_suat.xlsx";
-            $data = Excel::toArray((object)null, $filePath);
-            $ans["pole_stress"] = (float)(str_replace(["_x000D_", "\n"], '', $data[1][3][89]))*100;
-            //$ans["pole_stress"] = 85;
+            //$filePath = "D:\ungsuat\ung_suat.xlsx";
+            //$data = Excel::toArray((object)null, $filePath);
+            //$ans["pole_stress"] = (float)(str_replace(["_x000D_", "\n"], '', $data[1][3][89]))*100;
+            $ans["pole_stress"] = 85;
             return ApiResponse::success($ans  , ApiMessage::POLE_STRESS_SUCCESS);
         }
         catch (\Exception $e){

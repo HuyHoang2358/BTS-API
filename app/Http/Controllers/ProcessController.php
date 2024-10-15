@@ -474,7 +474,7 @@ class ProcessController extends Controller
 
             // Match device to pole
             $numDevice = 0;
-            foreach ($pole['objects'] as $object) {
+            foreach ($pole['objects'] as $index => $object) {
                 if (count($object) == 0) continue;
                 $poleDeviceInfo = $object[0];
                 $device = Device::where('name', trim($poleDeviceInfo['model'] ?? ''))->first();
@@ -495,6 +495,7 @@ class ProcessController extends Controller
 
                 // Create pole device
                 $poleDevice = PoleDevice::create([
+                    'index' => $index + 1,
                     'pole_id' => $newPole->id,
                     'device_id' => $device->id,
                     'geometry_box_id' => $geometry_box->id,
@@ -503,6 +504,8 @@ class ProcessController extends Controller
                     'vertices' => json_encode($poleDeviceInfo['vertices'] ?? []),
                     'tilt' => $poleDeviceInfo['tilt'] ?? null,
                     'azimuth' =>  $poleDeviceInfo['device_azimuth'] ?? null,
+                    'height' => $poleDeviceInfo['device_height'] ?? null,
+                    'description' => '',
                     'ai_device_width' => $poleDeviceInfo['model_width'] ?? null,
                     'ai_device_height' => $poleDeviceInfo['model_height'] ?? null,
                     'ai_device_depth' => $poleDeviceInfo['model_depth'] ?? null,

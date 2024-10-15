@@ -95,6 +95,10 @@ return [
             'remove-success' => 'Xóa thông tin thiết bị khỏi cột thành công',
         ]
     ],
+    'comment' => [
+        'add-success' => 'Thêm bình luận thành công',
+        'list' => 'Danh sách bình luận',
+    ],
     'station' => [
         'list' => 'Danh sách các trạm BTS',
         'detail' => 'Chi tiết trạm BTS',
@@ -105,11 +109,14 @@ return [
         'pole' => [
             'add-success' => 'Thêm thông tin cột vào trạm BTS thành công',
             'remove-success' => 'Xóa thông tin cột khỏi trạm BTS thành công',
+            "param" => [
+                'update-success' => 'Cập nhật thông số cột thành công',
+            ]
         ],
         "measurement"=> [
             'list' => 'Danh sách các thông số đo lường',
-            'add-success' => 'Thêm thông số đo lường thành công',
-        ]
+            'add-success' => 'Lưu thông tin đo lường thành công',
+        ],
     ],
     'file' => [
         'type-not-support' => 'Định dạng file không được hỗ trợ',
