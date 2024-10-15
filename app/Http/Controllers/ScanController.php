@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Enums\ApiMessage;
 use App\Helpers\ApiResponse;
 use App\Models\Measurement;
+use App\Models\Pole\Pole;
+use App\Models\Pole\PoleDevice;
 use App\Models\Pole\PoleParam;
 use App\Models\Scan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use SebastianBergmann\Diff\Exception;
 
 class ScanController extends Controller
 {
@@ -16,7 +19,7 @@ class ScanController extends Controller
     public function detail($id): JsonResponse
     {
         $scan = Scan::with([
-            'models',
+            'models', 'station', 'station.address',
             'poles', 'poles.category', 'poles.poleDevices', 'poles.poleParam',
             'poles.poleDevices.deviceInfo' , 'poles.poleDevices.deviceInfo.vendor',
             'poles.poleDevices.deviceInfo.category', 'poles.poleDevices.deviceInfo.params',
@@ -42,27 +45,32 @@ class ScanController extends Controller
 
     public function measurements($id): JsonResponse
     {
-       $measurements = Measurement::where('scan_id', $id)->get();
+       $measurements = Measurement::where('scan_id', $id)->where('is_active', 1)->get();
        return ApiResponse::success($measurements, ApiMessage::STATION_MEASUREMENT_INDEX);
 
     }
 
     public function storeMeasurement(Request $request, $id): JsonResponse
     {
-        $oleMeasurements = Measurement::where('scan_id', $id)->where('is_active', 1)->get();
-        if ($oleMeasurements->count() > 0) {
-            foreach ($oleMeasurements as $measurement) {
-                $measurement->update(['is_active' => 0]);
+        $input = $request->all();
+        $measurements = json_decode($input['measurements']);
+        $oldMeasurements = Measurement::where('scan_id', $id)->where('is_active', 1)->get();
+        if ($oldMeasurements->count() > 0) {
+            foreach ($oldMeasurements as $item) {
+                if (count($measurements) > 0) $item->update(['is_active' => 0]);
+                else $item->delete();
             }
         }
 
-        $input = $request->all();
-        $measurement = Measurement::create([
-            'scan_id' => $id,
-            'measurements' => $input['measurements'],
-            'user_id' => auth()->id(),
-            'is_active' => 1
-        ]);
+        $measurement = null;
+        if (count($measurements) > 0){
+            $measurement = Measurement::create([
+                'scan_id' => $id,
+                'measurements' => $input['measurements'],
+                'user_id' => auth()->id(),
+                'is_active' => 1
+            ]);
+        }
 
         return ApiResponse::success($measurement, ApiMessage::STATION_MEASUREMENT_ADD);
     }
@@ -71,13 +79,15 @@ class ScanController extends Controller
 
     }
 
-    public function historyPole($id, $pole_id){
-        $poleParams = PoleParam::where('pole_id', $pole_id)->orderBy('updated_at', 'desc')->get();
+    public function historyPole($id, $pole_id): JsonResponse
+    {
+        $poleParams = PoleParam::where('pole_id', $pole_id)->where('is_active', '0')->orderBy('updated_at', 'desc')->get();
 
         return  ApiResponse::success($poleParams, ApiMessage::POLE_STRESS_SUCCESS);
 
     }
-    public function updatePoleParams($id, $pole_id, Request $request){
+    public function updatePoleParams($id, $pole_id, Request $request): JsonResponse
+    {
         $activePoleParam = PoleParam::where('pole_id', $pole_id)->where('is_active',1)->first();
         $activePoleParam->update(['is_active' => 0]);
 
@@ -102,7 +112,79 @@ class ScanController extends Controller
             'is_active' => 1
         ]);
 
+        return ApiResponse::success($poleParam, ApiMessage::STATION_SCAN_POLE_PARAM);
+
+    }
+    public function rollbackPoleParam($id, $pole_id,Request $request): JsonResponse
+    {
+        $input = $request->all();
+        try{
+            $rollbackPoleParam = PoleParam::findOrfail($input['pole_param_id']);
+            $activePoleParam = PoleParam::where('pole_id', $pole_id)->where('is_active',1)->first();
+        }catch (Exception $e){
+            $errors = [
+                "rollback_pole_param_id" => $input['pole_param_id'],
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
+        }
+        $rollbackPoleParam->update(['is_active' => 1]);
+        $activePoleParam->update(['is_active' => 0]);
+        return ApiResponse::success($rollbackPoleParam, ApiMessage::STATION_SCAN_POLE_PARAM);
     }
 
+    public function historyDevice($id, $pole_id, $device_index): JsonResponse
+    {
+        $poleDevices = PoleDevice::where('pole_id', $pole_id)->where('index', $device_index)->where('is_active', 0)->orderBy('updated_at', 'desc')->get();
+        return  ApiResponse::success($poleDevices, ApiMessage::POLE_STRESS_SUCCESS);
+    }
+    public function updateDeviceParam($id, $pole_id, $device_index, Request $request): JsonResponse
+    {
+        $activeDeviceParam = Poledevice::where('pole_id', $pole_id)->where('index', $device_index)->where('is_active',1)->first();
+        $activeDeviceParam->update(['is_active' => 0]);
 
+        // Create new pole param
+        $input = $request->all();
+        $poleDevice = PoleDevice::create([
+            'pole_id' => $pole_id,
+            'index' => $device_index,
+            'device_id' => $input['device_id'] ?? $activeDeviceParam->device_id,
+            'geometry_box_id' => $input['geometry_box_id'] ?? $activeDeviceParam->geometry_box_id,
+            'rotation' => $input['rotation'] ?? $activeDeviceParam->rotation,
+            'translation' => $input['translation'] ?? $activeDeviceParam->translation,
+            'vertices' => $input['vertices'] ?? $activeDeviceParam->vertices,
+            'tilt'=> $input['tilt'] ?? $activeDeviceParam->tilt,
+            'azimuth' => $input['azimuth'] ?? $activeDeviceParam->azimuth,
+            'height' => $input['height'] ?? $activeDeviceParam->height,
+            'ai_device_width' => $input['ai_device_width'] ?? $activeDeviceParam->ai_device_width,
+            'ai_device_height' => $input['ai_device_height'] ?? $activeDeviceParam->ai_device_height,
+            'ai_device_depth' => $input['ai_device_depth'] ?? $activeDeviceParam->ai_device_depth,
+            'suggested_image' => $input['suggested_image'] ?? $activeDeviceParam->suggested_image,
+            'user_id'  => auth()->id(),
+            'is_active' => 1,
+            'description' => $input['description'] ?? $activeDeviceParam->description,
+        ]);
+
+        return ApiResponse::success($poleDevice, ApiMessage::STATION_SCAN_POLE_PARAM);
+
+    }
+    public function rollbackDeviceParam($id, $pole_id, $device_index, Request $request): JsonResponse
+    {
+        $input = $request->all();
+        try{
+            $rollbackPoleDevice = PoleDevice::findOrfail($input['pole_device_id']);
+            $activePoleDevice = PoleDevice::where('pole_id', $pole_id)->where('index',$device_index)->where('is_active',1)->first();
+        }catch (Exception $e){
+            $errors = [
+                "rollback_pole_device_id" => $input['pole_device_id'],
+                "error" => $e->getMessage(),
+            ];
+            return ApiResponse::error($errors, ApiMessage::POLE_NOT_FOUND, 404);
+        }
+
+        $rollbackPoleDevice->update(['is_active' => 1]);
+        $activePoleDevice->update(['is_active' => 0]);
+        return ApiResponse::success($rollbackPoleDevice, ApiMessage::STATION_SCAN_POLE_PARAM);
+
+    }
 }

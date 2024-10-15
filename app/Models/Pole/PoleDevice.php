@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static create(array $array)
  * @method static findOrFail($id)
  * @method static where(string $string, $pole_id)
+ * @property mixed $updated_at
  */
 class PoleDevice extends Model
 {
    protected $table = 'pole_devices';
    protected $fillable = [
+       'index',
        'pole_id',
        'device_id',
        'geometry_box_id',
@@ -27,10 +29,12 @@ class PoleDevice extends Model
        'vertices',
        'tilt',
        'azimuth',
+       'height',
        'ai_device_width',
        'ai_device_height',
        'ai_device_depth',
        'suggested_img',
+       'description',
        'user_id',
        'is_active',
    ];
@@ -49,6 +53,13 @@ class PoleDevice extends Model
     {
         return $this->hasMany(SuggestedDevice::class);
     }
+
+    public $appends = ['date_time'];
+    public function getDateTimeAttribute()
+    {
+        return $this->updated_at->format('Y-m-d H:i:s');
+    }
+
 
 
 }

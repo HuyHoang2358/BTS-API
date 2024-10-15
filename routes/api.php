@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StressPoleController;
@@ -147,10 +147,23 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('/{id}/measurements', [ScanController::class, 'storeMeasurement'])->name('scan.detail.store-measurements');
         Route::patch('/{id}/measurements/{measurement_id}', [ScanController::class, 'updateMeasurement'])->name('scan.detail.update-measurements');
 
-        Route::get('/{id}/poles/{pole_id}/', [ScanController::class, 'historyPole'])->name('scan.detail.pole.history');
-        Route::patch('/{id}/poles/{pole_id}/', [ScanController::class, 'updatePoleParams'])->name('scan.detail.pole.update-params');
+        Route::get('/{id}/poles/{pole_id}/histories', [ScanController::class, 'historyPole'])->name('scan.detail.pole.history');
+        Route::post('/{id}/poles/{pole_id}/histories/rollback', [ScanController::class, 'rollbackPoleParam'])->name('scan.detail.pole.history.rollback');
+        Route::patch('/{id}/poles/{pole_id}/params', [ScanController::class, 'updatePoleParams'])->name('scan.detail.pole.update-params');
+
+        Route::get('/{id}/poles/{pole_id}/devices/{device_index}/histories', [ScanController::class, 'historyDevice'])->name('scan.detail.pole.device.history');
+        Route::post('/{id}/poles/{pole_id}/devices/{device_index}/histories/rollback', [ScanController::class, 'rollbackDeviceParam'])->name('scan.detail.pole.device.history.rollback');
+        Route::patch('/{id}/poles/{pole_id}/devices/{device_index}/params', [ScanController::class, 'updateDeviceParam'])->name('scan.detail.pole.device.update-params');
 
     });
+
+    // Comment Manager
+    Route::group(['prefix' => 'comments'], function (){
+        Route::get('/{model}/{model_id}', [CommentController::class, 'index'])->name('comment.index');
+        Route::post('/{model}/{model_id}', [CommentController::class, 'store'])->name('comment.store');
+        Route::patch('/{model}/{model_id}', [CommentController::class, 'update'])->name('comment.update');
+    });
+
 
 
     // Pole Manager

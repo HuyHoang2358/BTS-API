@@ -3,6 +3,7 @@
 namespace App\Models\Pole;
 
 use App\Models\Device\Device;
+use App\Models\Scan;
 use App\Models\Station;
 use App\Models\StationPole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -56,6 +57,11 @@ class Pole extends Model
     public function poleParams(): HasMany
     {
         return $this->hasMany(PoleParam::class);
+    }
+
+    public function scan(): BelongsTo
+    {
+        return $this->belongsTo(Scan::class, 'scan_id');
     }
 
 

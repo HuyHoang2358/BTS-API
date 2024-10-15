@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static create(array $only)
  * @method static findOrFail($id)
  * @method static withCount(string $string)
+ * @method static whereIn(string $string, array $station_ids)
  * @property mixed $address
  */
 class Station extends Model
