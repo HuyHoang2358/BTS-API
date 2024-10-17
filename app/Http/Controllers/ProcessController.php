@@ -58,9 +58,10 @@ class ProcessController extends Controller
     {
         return match ($station_code) {
             'HTY1877' => '2753957',
-            'HNI4067' => '2736433',
+            'HNI4067' => '2771161',
             'HAN0240' => '2736511',
             'HAN0212' => '2743152',
+            'HAN1188' => '2772579',
             default => '',
         };
     }

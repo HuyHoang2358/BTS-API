@@ -151,9 +151,12 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('/{id}/poles/{pole_id}/histories/rollback', [ScanController::class, 'rollbackPoleParam'])->name('scan.detail.pole.history.rollback');
         Route::patch('/{id}/poles/{pole_id}/params', [ScanController::class, 'updatePoleParams'])->name('scan.detail.pole.update-params');
 
+        Route::get('/{id}/poles/{pole_id}/devices/{device_index}/suggested-devices', [ScanController::class, 'suggestedDevices'])->name('scan.detail.pole.device.suggested');
+
         Route::get('/{id}/poles/{pole_id}/devices/{device_index}/histories', [ScanController::class, 'historyDevice'])->name('scan.detail.pole.device.history');
         Route::post('/{id}/poles/{pole_id}/devices/{device_index}/histories/rollback', [ScanController::class, 'rollbackDeviceParam'])->name('scan.detail.pole.device.history.rollback');
         Route::patch('/{id}/poles/{pole_id}/devices/{device_index}/params', [ScanController::class, 'updateDeviceParam'])->name('scan.detail.pole.device.update-params');
+
 
     });
 
