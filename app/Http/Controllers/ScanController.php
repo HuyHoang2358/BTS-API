@@ -133,6 +133,10 @@ class ScanController extends Controller
         return ApiResponse::success($rollbackPoleParam, ApiMessage::STATION_SCAN_POLE_PARAM);
     }
 
+    public function suggestedDevices($id, $pole_id, $device_index){
+
+    }
+
     public function historyDevice($id, $pole_id, $device_index): JsonResponse
     {
         $poleDevices = PoleDevice::where('pole_id', $pole_id)->where('index', $device_index)->where('is_active', 0)->orderBy('updated_at', 'desc')->get();
